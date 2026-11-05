@@ -1,6 +1,6 @@
 {
-  "name": "מי עולה על הדשא?",
-  "short_name": "מי עולה?",
+  "name": "ברצפלוחה",
+  "short_name": "ברצפלוחה",
   "lang": "he",
   "dir": "rtl",
   "start_url": "./",
@@ -10,8 +10,23 @@
   "background_color": "#0c1a45",
   "theme_color": "#0c1a45",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
   ]
 }
