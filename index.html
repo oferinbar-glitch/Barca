@@ -721,6 +721,13 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 .pitch{transform:rotateX(15deg);transform-origin:50% 100%;transform-style:preserve-3d;overflow:visible}
 .pitch::before{border-radius:inherit}
 .pitch .slot{transform:translate(-50%,-50%) rotateX(-15deg);transform-origin:50% 100%}
+
+/* ===== pass 8: lottie ===== */
+.ko-whistle{position:absolute;left:50%;top:50%;width:230px;height:230px;margin:-150px 0 0 -115px;pointer-events:none}
+.fin-trophy{width:180px;height:180px;margin:-22px auto -30px;display:grid;place-items:center}
+.fin-trophy svg{width:100%!important;height:100%!important}
+.fin-trophy .fin-logo{width:74px}
+.goal-fx{position:fixed;left:50%;top:calc(38% + 150px);width:250px;height:250px;margin-left:-125px;z-index:76;pointer-events:none}
 </style>
 </head>
 <body>
@@ -1033,6 +1040,27 @@ function flagFx(){
   t.from(q(".placewrong small,.placewrong .fin-foot"),{y:12,opacity:0,duration:.35,stagger:.08},"-=.3");
   gsap.to(q(".flag-cloth"),{skewY:7,scaleX:.93,duration:.32,yoyo:true,repeat:-1,ease:"sine.inOut",transformOrigin:"0% 50%"});
 }
+const LOT={};
+function lottieLib(){ return window.lottie?Promise.resolve():loadScript("assets/lottie.min.js"); }
+function lottieData(name){ if(!LOT[name]) LOT[name]=fetch("assets/lottie/"+name+".json").then(r=>{ if(!r.ok) throw 0; return r.json(); }); return LOT[name]; }
+function playLottie(el,name,opts){
+  opts=opts||{};
+  if(!el||reduceMotion) return Promise.resolve(null);
+  return Promise.all([lottieLib(),lottieData(name)]).then(([,d])=>{
+    if(!el.isConnected||!window.lottie) return null;
+    const a=lottie.loadAnimation({container:el,renderer:"svg",loop:!!opts.loop,autoplay:true,animationData:JSON.parse(JSON.stringify(d))});
+    if(opts.speed) a.setSpeed(opts.speed);
+    return a;
+  }).catch(()=>{ LOT[name]=null; return null; });
+}
+setTimeout(()=>{ lottieLib().then(()=>["whistle","trophy","goal"].forEach(n=>lottieData(n).catch(()=>{ LOT[n]=null; }))).catch(()=>{}); },2500);
+function goalFx(){
+  if(reduceMotion) return;
+  const d=document.createElement("div"); d.className="goal-fx"; document.body.appendChild(d);
+  playLottie(d,"goal",{speed:1.15}).then(a=>{ if(!a){ d.remove(); return; } a.addEventListener("complete",()=>{
+    if(typeof gsap!=="undefined") gsap.to(d,{opacity:0,duration:.25,onComplete:()=>d.remove()}); else d.remove(); }); });
+  setTimeout(()=>{ if(d.isConnected) d.remove(); },4500);
+}
 let TM_BUSY=false;
 function tmReveal(b,ansId,done){
   if(TM_BUSY) return; TM_BUSY=true;
@@ -1248,19 +1276,19 @@ function kickoff(done){
   whistle(); buzz('kick');
   const el=overlay('<div class="fx2 ko2"><div class="ko-stage">'+
     '<svg class="ko-lines" viewBox="0 0 240 240" fill="none"><line class="dl" pathLength="1" x1="-50" y1="120" x2="290" y2="120"/><circle class="dl" pathLength="1" cx="120" cy="120" r="78"/><circle class="ko-spot" cx="120" cy="120" r="4.5"/></svg>'+
-    '<div class="ko-shadow"></div><div class="ko-ball">'+BALL_SVG+'</div></div>'+
+    '<div class="ko-shadow"></div><div class="ko-ball">'+BALL_SVG+'</div><div class="ko-whistle"></div></div>'+
     '<div class="fx-title">שריקת פתיחה</div><div class="fx-sub">המשחק התחיל. בהצלחה.</div></div>','fxo');
   const B=el.firstElementChild;
   if(HAS_G()){
     const q=s=>el.querySelectorAll(s), t=fxTl();
-    t.fromTo(q(".dl"),{attr:{"stroke-dashoffset":1}},{attr:{"stroke-dashoffset":0},duration:.85,ease:"power2.inOut",stagger:.18})
+    playLottie(q(".ko-whistle")[0],"whistle",{speed:1.1}).then(a=>{ if(a) a.addEventListener("complete",()=>gsap.to(q(".ko-whistle"),{opacity:0,duration:.25})); }); t.to({},{duration:reduceMotion?0:1.0}); t.fromTo(q(".dl"),{attr:{"stroke-dashoffset":1}},{attr:{"stroke-dashoffset":0},duration:.85,ease:"power2.inOut",stagger:.18})
      .from(q(".ko-spot"),{scale:0,transformOrigin:"50% 50%",duration:.3,ease:"back.out(3)"},"-=.35")
-     .fromTo(q(".ko-ball"),{y:-340,rotation:-260},{y:0,rotation:0,duration:1.15,ease:"bounce.out"},"-=.55")
+     .fromTo(q(".ko-ball"),{y:-340,rotation:-260,opacity:0},{y:0,rotation:0,opacity:1,duration:1.15,ease:"bounce.out"},"-=.55")
      .fromTo(q(".ko-shadow"),{scale:.15,opacity:0},{scale:1,opacity:1,duration:1.15,ease:"bounce.out"},"<")
      .add(splitIn(q(".fx-title")[0])||gsap.timeline(),"-=.5")
      .from(q(".fx-sub"),{y:12,opacity:0,duration:.4},"-=.25");
   }
-  setTimeout(()=>fxOut(B,()=>{ if(done)done(); }),3600);
+  setTimeout(()=>fxOut(B,()=>{ if(done)done(); }),reduceMotion?3600:4500);
 }
 function showCard(color,text,after){
   whistle(); buzz(color);
@@ -1767,7 +1795,7 @@ function evaluate(k,pid){
     closeSheet(); renderPlay();
     const el=document.querySelector('[data-slot="'+k+'"]');
     const btnRect=el.getBoundingClientRect();
-    cheer(); flyIn(pl,el);
+    cheer(); flyIn(pl,el); if(!st.tries.length&&!hintCount(st)) setTimeout(goalFx,250);
     const inMid=lineOf(g,k)==="mid";
     const off=!inMid&&natPos(pl)&&natPos(pl)!==labelOf(g,k);
     const msg=pick(MSG.ok)+" "+nm+" משחק כ"+labelOf(g,k)+(inMid?" · "+pick(MSG.mid):(off?" · שימי לב, העמדה הטבעית שלו היא "+natPos(pl):""));
@@ -1880,7 +1908,7 @@ function renderFinish(){
   closeKeyboard();
   const g=getGame(); const p=getProg(g); const r=buildReport(g,p);
   const line=(ttl,val,sub)=>'<div class="rrow"><span class="rv">'+val+'</span><div class="rt"><b>'+esc(ttl)+'</b>'+(sub?'<small>'+esc(sub)+'</small>':'')+'</div></div>';
-  let h='<img src="'+LOGO+'" alt="" class="fin-logo">'+
+  let h='<div class="fin-trophy"><img src="'+LOGO+'" alt="" class="fin-logo"></div>'+
     '<h2>ההרכב המלא על הדשא</h2>'+
     '<p class="fin-sub">ברצלונה נגד '+esc(g.opp||"היריבה")+' · '+esc(fmtDay(g.date))+'</p>'+
     xiHtml(g,p)+
@@ -1894,6 +1922,7 @@ function renderFinish(){
   if(r.tough.length) h+='<button class="btn-main" id="reviewBtn">סבב חזרה על '+r.tough.length+' שחקנים</button>';
   h+='<div class="fin-foot"><button class="btn ghost" id="copyBtn">העתקת הסיכום</button><button class="btn ghost" id="finishBtn">חזרה לדף הבית</button></div>';
   $("#finBody").innerHTML=h;
+  if(!reduceMotion){ const tr=$(".fin-trophy"); playLottie(tr,"trophy").then(a=>{ if(a&&tr.querySelector("svg")){ const img=tr.querySelector(".fin-logo"); if(img) img.remove(); } }); }
   $("#finishBtn").onclick=()=>{$("#finish").classList.remove("show");show("home")};
   $("#copyBtn").onclick=()=>{ const txt=reportText(g,r);
     try{ navigator.clipboard.writeText(txt).then(()=>toast("הסיכום הועתק"),()=>toast("לא הצלחתי להעתיק")); }catch(e){ toast("לא הצלחתי להעתיק"); } };
@@ -1973,7 +2002,7 @@ function finishFx(){
   const box=document.getElementById("finBody"); if(!box) return;
   const q=s=>box.querySelectorAll(s);
   const t=gsap.timeline();
-  t.from(q(".fin-logo"),{scale:.4,opacity:0,rotation:-20,duration:.6,ease:"back.out(2.2)"});
+  t.from(q(".fin-trophy"),{scale:.4,opacity:0,rotation:-20,duration:.6,ease:"back.out(2.2)"});
   const sp=splitIn(q("h2")[0]); if(sp) t.add(sp,"-=.3");
   t.from(q(".fin-sub"),{opacity:0,duration:.3},"-=.2")
    .from(q(".xi-head"),{opacity:0,y:8,duration:.3})
