@@ -383,7 +383,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:60}
 .rt small{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
 .fin-foot{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap}
 .fin-foot .btn{color:var(--chalk);border-color:rgba(255,255,255,.35);flex:1;min-width:130px}
-#reviewBtn{width:100%}
+#reviewBtn{width:100%;transition:none}
 .rv-head{font-size:13px;color:var(--muted);margin-bottom:14px}
 .rv-face{width:160px;height:160px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 4px var(--gold);margin-bottom:12px}
 .rv-pos{font-family:var(--f-display);font-size:24px;margin-bottom:16px}
@@ -739,6 +739,22 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 .kb-k:active{background:rgba(237,187,0,.4)}
 .kb-k.del{background:rgba(165,0,68,.72)}
 .kb-k.space{background:rgba(29,87,184,.6);color:#fff}
+
+/* ===== pass 10 ===== */
+.ticket{position:relative;background:linear-gradient(135deg,rgba(29,87,184,.24),rgba(165,0,68,.2));border:1px solid rgba(255,255,255,.14);color:var(--chalk);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:0 18px 40px rgba(0,0,0,.35)}
+.ticket::before{content:"";position:absolute;right:0;top:0;bottom:0;width:5px;background:linear-gradient(180deg,var(--blau) 0 50%,var(--grana) 50%)}
+.ticket::after{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(180deg,var(--blau) 0 50%,var(--grana) 50%)}
+.ticket .ticket-stub{display:none}
+.ticket .ticket-body{padding:16px 20px 17px;text-align:center}
+.tk-top{display:flex;justify-content:center;align-items:center;gap:9px;font-size:12.5px;font-weight:600;letter-spacing:.4px;color:var(--gold)}
+.tk-top span+span::before{content:"";display:inline-block;width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.45);margin-left:9px;vertical-align:middle}
+.ticket .opp{color:var(--chalk);font-size:40px;line-height:1;margin:8px 0 6px}
+.ticket .when{color:#c9d1ea;font-size:14.5px;font-weight:500}
+/* finish: air between the review button and the two buttons under it */
+#reviewBtn{margin:4px 0 26px}
+#reviewBtn+.fin-foot{margin-top:0}
+.finish{background:linear-gradient(180deg,#0a1438,#070f2c)}
 </style>
 </head>
 <body>
@@ -1115,7 +1131,7 @@ function xiHtml(g,p){
   return '<div class="xi"><div class="xi-head">ההרכב הפותח</div><div class="xi-pitch">'+pitchLines()+sl.map(s=>{
     const pl=byId(g.lineup[s.k]); const st=p.slots[s.k]||{hints:{},tries:[]}; const ph=pl?photoOf(pl.id):null;
     const clean=st.done&&!st.revealed&&!(st.tries||[]).length&&!hintCount(st);
-    const yy=7+(s.y-13)/(89-13)*84;
+    const yy=13+(s.y-13)/(89-13)*74;
     return '<div class="xi-p'+(clean?' clean':'')+(st.revealed?' rev':'')+'" data-line="'+s.line+'" style="left:'+s.x+'%;top:'+yy.toFixed(1)+'%">'+
       '<span class="xi-f">'+(ph?'<img alt="" src="'+ph+'">':'')+'</span><span class="xi-n">'+esc(pl?callName(pl):"")+'</span></div>';
   }).join("")+'</div><div class="xi-key"><i></i>בניסיון ראשון, בלי טעות ובלי רמז</div></div>';
@@ -1155,18 +1171,27 @@ function fullTime(){
 }
 
 /* ===================== HOME ===================== */
+function matchDate(s){
+  const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s||""); if(!m) return s||"";
+  const d=new Date(+m[1],+m[2]-1,+m[3]);
+  let out; try{ out=d.toLocaleDateString("he-IL",{weekday:"long",day:"numeric",month:"long"}); }catch(e){ out=fmtDay(s); }
+  const t=new Date(); t.setHours(0,0,0,0); const diff=Math.round((d-t)/864e5);
+  if(diff===0) out+=" · היום"; else if(diff===1) out+=" · מחר"; else if(diff>1&&diff<15) out+=" · בעוד "+diff+" ימים";
+  return out;
+}
 function renderHome(){
   const g=getGame(); const prog=jget(K.prog,null);
   const body=$("#ticketBody"), btn=$("#startBtn");
   if(g){
     const c=compOf(g.comp);
-    body.innerHTML='<small>המשחק הבא</small><div class="opp">נגד '+esc(g.opp||"היריבה")+'</div><div class="when">'+esc(fmtDay(g.date)||"")+'</div>';
-    $("#ticketComp").innerHTML=c?'<span class="comp-badge">'+c.svg+'<small>'+esc(c.name)+'</small></span>':'';
+    body.innerHTML='<div class="tk-top"><span>המשחק הבא</span>'+(c?'<span>'+esc(c.name)+'</span>':'')+'</div>'+
+      '<div class="opp">נגד '+esc(g.opp||"היריבה")+'</div><div class="when">'+esc(matchDate(g.date))+'</div>';
+    $("#ticketComp").innerHTML='';
     btn.disabled=false;
     const started=prog&&prog.gameId===g.id&&Object.values(prog.slots||{}).some(s=>s.done||s.tries.length);
     btn.textContent=started?"המשיכי לנחש":"את המאמנת היום";
   }else{
-    body.innerHTML='<small>המשחק הבא</small><div class="opp">עוד אין הרכב</div><div class="when">ההרכב ייפתח אחרי שהמפעיל יזין אותו</div>';
+    body.innerHTML='<div class="tk-top"><span>המשחק הבא</span></div><div class="opp">עוד אין הרכב</div><div class="when">ההרכב ייפתח אחרי שהמפעיל יזין אותו</div>';
     $("#ticketComp").innerHTML='';
     btn.disabled=true; btn.textContent="את המאמנת היום";
   }
@@ -1957,7 +1982,7 @@ function renderFinish(){
       (r.hardest&&r.hardN>0?line("הכי נתקעת",String(r.hardN),r.hardest.label+" · ניחושים שגויים"):"")+
       (r.confId&&r.confN>1?line("הכי בלבל אותך",String(r.confN),callName(byId(r.confId))+" · פעמים"):"")+
     '</div>';
-  if(r.tough.length) h+='<button class="btn-main" id="reviewBtn">סבב חזרה על '+r.tough.length+' שחקנים</button>';
+  if(r.tough.length) h+='<button class="btn-main" id="reviewBtn">סבב חזרה על '+(r.tough.length===1?'שחקן אחד':r.tough.length+' שחקנים')+'</button>';
   h+='<div class="fin-foot"><button class="btn ghost" id="copyBtn">העתקת הסיכום</button><button class="btn ghost" id="finishBtn">חזרה לדף הבית</button></div>';
   $("#finBody").innerHTML=h;
   if(!reduceMotion){ const tr=$(".fin-trophy"); playLottie(tr,"trophy").then(a=>{ if(a&&tr.querySelector("svg")){ const img=tr.querySelector(".fin-logo"); if(img) img.remove(); } }); }
@@ -2051,7 +2076,7 @@ function finishFx(){
   t.from(q(".xi-key"),{opacity:0,duration:.3});
   const rowsAt=t.duration();
   t.from(q(".rrow"),{x:-30,opacity:0,duration:.4,stagger:.09,ease:"power2.out"})
-   .from(q("#reviewBtn,.fin-foot"),{y:16,opacity:0,duration:.35,stagger:.08},"-=.15");
+   .from(q("#reviewBtn,.fin-foot"),{y:16,opacity:0,duration:.35,stagger:.08,clearProps:"transform,opacity"},"-=.15");
   q(".rv").forEach((el,i)=>{
     const n=el.firstChild; if(!n||n.nodeType!==3) return;
     const target=parseInt(n.textContent,10); if(isNaN(target)||target<=0) return;
