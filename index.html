@@ -762,6 +762,14 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 .kb-k:focus,.kb-k:focus-visible{outline:none}
 .kb-row{gap:5px}
 .kb-k{height:46px}
+
+/* ===== pass 12: first-try ring pulses on the pitch and in the legend, in sync ===== */
+@keyframes goldPulse{0%,100%{box-shadow:0 0 0 3px var(--gold),0 0 8px rgba(237,187,0,.35),0 6px 14px rgba(0,0,0,.4)}
+  50%{box-shadow:0 0 0 4px #ffd84a,0 0 26px rgba(237,187,0,.95),0 6px 14px rgba(0,0,0,.4)}}
+@keyframes goldDot{0%,100%{box-shadow:0 0 0 2.5px var(--gold),0 0 4px rgba(237,187,0,.3)}50%{box-shadow:0 0 0 3px #ffd84a,0 0 14px rgba(237,187,0,.95)}}
+.xi-p.clean .xi-f{animation:goldPulse 1.6s ease-in-out 2.2s infinite}
+.xi-key i{animation:goldDot 1.6s ease-in-out 2.2s infinite}
+@media (prefers-reduced-motion: reduce){.xi-p.clean .xi-f,.xi-key i{animation:none}}
 </style>
 </head>
 <body>
@@ -989,7 +997,8 @@ function homeIn(){
 function showNow(id){document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("active",s.id===id));window.scrollTo(0,0);
   if(id==="home")renderHome(); if(id==="play"){renderPlay();bgStart();} else bgStop(); if(id==="operator")renderOperator();}
 document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>show(b.dataset.go));
-let toastT; function toast(msg,html){const t=$("#toast");if(html)t.innerHTML=msg;else t.textContent=msg;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),350+3600);}
+let toastT; function toast(msg,html){
+  if($("#play").classList.contains("active")){ const gg=getGame(); if(gg){ const pp=getProg(gg); if(Object.values(pp.slots).every(s=>s.done)) return; } }const t=$("#toast");if(html)t.innerHTML=msg;else t.textContent=msg;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),350+3600);}
 function openSheet(html){closeKeyboard();const s=$("#sheet");s.innerHTML='<div class="grab"></div>'+html;s.classList.add("open");$("#backdrop").classList.add("open");}
 const KB_ROWS=[["פ","ם","ן","ו","ט","א","ר","ק"],["ף","ך","ל","ח","י","ע","כ","ג","ד","ש"],["ץ","ת","צ","מ","נ","ה","ב","ס","ז"]];
 function kbEl(){ let el=document.getElementById("kb"); if(!el){ el=document.createElement("div"); el.id="kb"; el.style.setProperty("--crest","url('"+LOGO+"')"); document.body.appendChild(el);} return el; }
@@ -1028,17 +1037,11 @@ function closeSheet(){ closeKeyboard();$("#sheet").classList.remove("open");$("#
 $("#backdrop").onclick=closeSheet;
 /* Back button: while the app is anywhere but the bare home screen, one history entry is kept as a sentinel.
    Pressing back consumes it, we undo exactly one layer, and the sentinel is restored if needed. */
-let HS_SENT=false, HS_SKIP=false;
-function atRoot(){
-  const kb=document.getElementById("kb"), o=document.getElementById("ovl");
-  return $("#home").classList.contains("active")&&!$("#sheet").classList.contains("open")&&!(kb&&kb.classList.contains("open"))&&
-    !(o&&o.classList.contains("show"))&&!$("#finish").classList.contains("show");
-}
-function syncHistory(){
-  const root=atRoot();
-  if(!root&&!HS_SENT){ try{ history.pushState({lineup:1},""); HS_SENT=true; }catch(e){} }
-  else if(root&&HS_SENT){ HS_SENT=false; HS_SKIP=true; try{ history.back(); }catch(e){ HS_SKIP=false; } }
-}
+let HS_DEPTH=0;
+const HS_TARGET=8;
+function topUpHistory(){ try{ while(HS_DEPTH<HS_TARGET){ history.pushState({lineup:HS_DEPTH+1},""); HS_DEPTH++; } }catch(e){} }
+["pointerdown","keydown"].forEach(t=>document.addEventListener(t,topUpHistory,true));   // inside a real user gesture
+try{ history.replaceState({lineup:0},""); }catch(e){}
 function goBackOne(){
   const kb=document.getElementById("kb"), o=document.getElementById("ovl");
   const click=sel=>{ const b=document.querySelector(sel); if(b){ b.click(); return true; } return false; };
@@ -1048,12 +1051,13 @@ function goBackOne(){
   if($("#sheet").classList.contains("open")){ if(click("#sheet [data-back]")) return; closeSheet(); return; }
   const pb=$("#placeBar"); if(pb&&!pb.hidden&&click("#pbCancel")) return;
   if(!$("#home").classList.contains("active")) show("home");
+  // on the home screen itself: stay put
 }
 window.addEventListener("popstate",()=>{
-  if(HS_SKIP){ HS_SKIP=false; return; }
-  HS_SENT=false; goBackOne(); setTimeout(syncHistory,60);
+  HS_DEPTH=Math.max(0,HS_DEPTH-1);
+  goBackOne();
+  try{ while(HS_DEPTH<2){ history.pushState({lineup:HS_DEPTH+1},""); HS_DEPTH++; } }catch(e){}   // best effort until the next tap tops it up
 });
-setInterval(syncHistory,300);
 function fmtDay(s){const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s||"");return m?m[3]+"."+m[2]+"."+m[1].slice(2):(s||"");}
 function todayStr(){const t=new Date();return t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");}
 function fmtDate(d){if(!d)return"";try{const dt=new Date(d);if(isNaN(dt))return d;return dt.toLocaleString("he-IL",{weekday:"long",day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"});}catch(e){return d}}
@@ -2132,6 +2136,7 @@ function finishFx(){
   });
 }
 function checkFinish(){
+  { const t=$("#toast"); if(t) t.classList.remove("show"); }
   const g=getGame(); if(!g)return; const p=getProg(g);
   if(Object.values(p.slots).every(s=>s.done)){
     renderFinish();
