@@ -728,6 +728,17 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 .fin-trophy svg{width:100%!important;height:100%!important}
 .fin-trophy .fin-logo{width:74px}
 .goal-fx{position:fixed;left:50%;top:calc(38% + 150px);width:250px;height:250px;margin-left:-125px;z-index:76;pointer-events:none}
+
+/* ===== pass 9: blaugrana keyboard ===== */
+#kb{background:linear-gradient(180deg,rgba(6,12,34,.5),rgba(6,12,34,.72)),repeating-linear-gradient(90deg,#1d4fa8 0 12.5%,#8a0a3d 12.5% 25%);
+  border-top:2px solid var(--gold);overflow:visible}
+#kb::before{content:"";position:absolute;inset:0;background:var(--crest) center 46%/auto 80% no-repeat;opacity:.17;pointer-events:none}
+.kb-in{position:relative;z-index:1}
+.kb-k{background:rgba(8,16,44,.5);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);color:#fff;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 2px 0 rgba(0,0,0,.35)}
+.kb-k:active{background:rgba(237,187,0,.4)}
+.kb-k.del{background:rgba(165,0,68,.72)}
+.kb-k.space{background:rgba(29,87,184,.6);color:#fff}
 </style>
 </head>
 <body>
@@ -784,42 +795,51 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 <p>לנחש את ההרכב הפותח של ברצלונה, שחקן אחרי שחקן, כל אחד בעמדה המדויקת שלו. בלי ניקוד, בלי לחץ, רק את מול פליק.</p>
 
 <h2>מנחשים</h2>
-<p>המגרש תמיד בנוי 4-3-3: שוער, ארבעה בהגנה, שלושה בקישור ושלושה בהתקפה. לוחצים על עמדה, כותבים את שם השחקן ולוחצים "בדיקה". אפשר לעבור בין עמדות בכל סדר, לצאת מעמדה ולחזור אליה, ולנסות כמה פעמים שבא לך.</p>
+<p>המגרש תמיד בנוי 4-3-3: שוער, ארבעה בהגנה, שלושה בקישור ושלושה בהתקפה. לוחצים על עמדה, כותבים את שם השחקן במקלדת ולוחצים "בדיקה". אפשר לעבור בין עמדות בכל סדר, לצאת מעמדה ולחזור אליה, ולנסות כמה פעמים שבא לך.</p>
 <p>אפשר לרשום שם מלא, שם פרטי, שם משפחה, או השם שנהוג לקרוא לשחקן. אם השם נכתב באופן לא מדויק, המערכת תדע להציע לך את השחקן הנכון.</p>
 
 <h2>מה התשובות אומרות</h2>
 <ul>
-<li><b>בול!</b> השחקן בעמדה המדויקת. העמדה נסגרת ותמונת השחקן מופיעה.</li>
+<li><b>בול!</b> השחקן בעמדה המדויקת. התמונה שלו קופצת למרכז המסך ועפה למקום שלו במגרש.</li>
+<li><b>GOAL!</b> אם פיצחת עמדה בניסיון הראשון, בלי טעות ובלי רמז, מקבלים חגיגה מיוחדת.</li>
 <li><b>קרוב מאוד.</b> השחקן משחק באותו קו (הגנה, קישור או התקפה), אבל בעמדה אחרת בו.</li>
 <li><b>הוא על הדשא, אבל לא פה.</b> הוא פותח בקו אחר לגמרי, והמערכת תגיד לך באיזה.</li>
 <li><b>על הספסל.</b> הוא בסגל, אבל לא פותח.</li>
 <li><b>לא בסגל היום.</b> פצוע, לא כשיר, או פשוט לא נבחר.</li>
 </ul>
+<p>הטלפון גם רוטט: רטט קצר בניחוש נכון, רטט כפול בטעות.</p>
 
 <h2>הקישור עניין בפני עצמו</h2>
 <p>פליק מזיז את שלושת הקשרים כל הזמן, ולפעמים אין לזה שם מדויק. לכן בקישור צריך רק לסדר נכון את השלושה בין ימין, מרכז ושמאל. אם צדקת בשחקן אבל לא במשבצת, פשוט תסדרי מחדש.</p>
 
 <h2>פנקס הגילויים</h2>
-<p>כל ניחוש לא נכון נרשם בפנקס: קודם מי שגילית שהוא בהרכב אבל בעמדה אחרת, אחריו מי שעל הספסל, ובסוף מי שלא בסגל. שחקנים שכבר ניחשת נכון לא נרשמים שם, כי אותם ממילא תזכרי.</p>
+<p>כל ניחוש לא נכון נרשם בפנקס, והשם עף אליו ממש מול העיניים: קודם מי שגילית שהוא בהרכב אבל בעמדה אחרת, אחריו מי שעל הספסל, ובסוף מי שלא בסגל. שחקנים שכבר ניחשת נכון לא נרשמים שם, כי אותם ממילא תזכרי.</p>
 <p>הפנקס פתוח תמיד, בתוך כל עמדה. ואם תנסי שוב שחקן שכבר פסלת, המערכת תעצור אותך ותזכיר מה כבר ידוע עליו.</p>
 
+<h2>למקם שחקן במקום אחר</h2>
+<p>אם ניחשת שחקן שבאמת פותח היום, רק לא בעמדה שבחרת, אפשר ללחוץ "למקם אותו". המגרש נדלק, ולוחצים על העמדה שבה לדעתך הוא משחק. צדקת? העמדה נסגרת. טעית? הקוון מרים דגל, ואפשר לנסות שוב או לחזור לנחש בעמדות אחרות.</p>
+
 <h2>רמזים</h2>
-<p>בכל עמדה יש כפתור "רמזים" אחד, והוא פותח חלון עם ארבע אפשרויות. אפשר לקחת כמה שרוצים, והם לא עולים כלום:</p>
+<p>בכל עמדה יש שורת "רמזים". היא סגורה עד שפותחים אותה, ונשארת כמו שהשארת אותה: פתחת, היא פתוחה, סגרת, היא סגורה. כל רמז נפתח במקום, ואפשר לקחת כמה שרוצים. הם לא עולים כלום:</p>
 <ul>
+<li><b>מי משחק בעמדה הזו</b>: כל השחקנים בסגל שזו העמדה הטבעית שלהם. זה לא אומר מי פותח היום.</li>
 <li><b>לאום</b> של השחקן.</li>
-<li><b>שם השחקן</b> – כמה אותיות יש בשם הפרטי ובשם המשפחה, ולצד כל אחד מהם כפתור "חשוף אות" שאפשר ללחוץ עליו שוב ושוב עד שהשם מתגלה.</li>
-<li><b>מי משחק בעמדה הזו</b> – כל השחקנים בסגל שהעמדה הטבעית שלהם מתאימה. זה לא אומר מי פותח היום.</li>
-<li><b>מידע על שחקן ספציפי</b> – בוחרים שחקן ומקבלים תזכורת על העמדה שלו, ולפעמים הערה על ההרגלים של פליק איתו.</li>
+<li><b>תמונה מפוקסלת</b>: התמונה שלו בפיקסלים גסים, שמתחדדת בכל לחיצה, בארבעה שלבים.</li>
+<li><b>אותיות השם</b>: כמה אותיות יש בשם הפרטי ובשם המשפחה, וכפתור לחשיפת אות, שוב ושוב, עד שהשם מתגלה.</li>
 </ul>
-<p>יש גם רמזים שקופצים מעצמם: אם ניסית פעמיים ולא הצלחת, המערכת עשויה לרמוז שפליק עשה כאן משהו לא שגרתי. ואם ניחשת את אותו שחקן פעמיים במקומות שונים והוא באמת משחק היום, היא תציע להזכיר לך מה העמדה הטבעית שלו, ואת מחליטה אם לקחת.</p>
+<p>מתחת לרמזים יש גם <b>מידע על שחקן ספציפי</b>: בוחרים כל שחקן בסגל ומקבלים תזכורת על העמדה הטבעית שלו, ולפעמים הערה על ההרגלים של פליק איתו.</p>
+<p>ויש רמזים שקופצים מעצמם: אם ניסית פעמיים ולא הצלחת, המערכת עשויה לרמוז שפליק עשה כאן משהו לא שגרתי. ואם ניחשת את אותו שחקן פעמיים במקומות שונים והוא באמת משחק היום, היא תציע להזכיר לך מה העמדה הטבעית שלו, ואת מחליטה אם לקחת.</p>
 
 <h2>תגלה לי</h2>
-<p>נתקעת? הכפתור "תגלה לי" לא מגלה את התשובה ישר. הוא מצמצם לך לשתי אפשרויות, אחת נכונה ואחת לא, ואת בוחרת. גם אם טעית העמדה נסגרת, אבל אם צדקת זה נחשב.</p>
+<p>נתקעת? הכפתור "תגלה לי" לא מגלה את התשובה ישר. הוא מעמיד שני שחקנים אחד מול השני, אחד נכון ואחד לא, ואת בוחרת. גם אם טעית העמדה נסגרת, אבל אם צדקת זה נחשב.</p>
+
+<h2>כרטיסים, VAR והפסקת שתייה</h2>
+<p>שני ניחושים שגויים באותה עמדה מביאים כרטיס צהוב, ושלושה מביאים אדום. אבל אל דאגה: ה-VAR תמיד מבטל את האדום, כי על ניחוש לא מוציאים אף אחד מהמשחק.</p>
+<p>אחרי 15 ניחושים יש הפסקת שתייה של עשר שניות. אפשר לחכות, או ללחוץ "חזרה למגרש" ולהמשיך מיד.</p>
 
 <h2>בסוף המשחק</h2>
-<p>כשכל 11 העמדות נסגרות מופיעה מהדורת סיכום: כמה עמדות פיצחת בניסיון ראשון בלי טעות ובלי רמז, כמה ניחושים ורמזים לקחת, באיזו עמדה הכי נתקעת ואיזה שחקן הכי בלבל אותך. משם אפשר לצאת לסבב חזרה קצר על השחקנים שהתקשית בהם, ולראות אם השם כבר נדבק.</p>
-
-
+<p>כשכל 11 העמדות נסגרות, השופט שורק לסיום: גביע, זיקוקים, וההרכב הפותח נוחת על המגרש שחקן אחרי שחקן. מי שפיצחת בניסיון ראשון, בלי טעות ובלי רמז, מקבל טבעת זהב.</p>
+<p>אחר כך מגיע הסיכום: כמה עמדות פיצחת בניסיון ראשון, כמה ניחושים ורמזים לקחת, באיזו עמדה הכי נתקעת ואיזה שחקן הכי בלבל אותך. משם אפשר לצאת לסבב חזרה קצר על השחקנים שהתקשית בהם, ולראות אם השם כבר נדבק.</p>
 </article>
 </section>
 
@@ -949,7 +969,7 @@ document.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>show(b.dataset.g
 let toastT; function toast(msg,html){const t=$("#toast");if(html)t.innerHTML=msg;else t.textContent=msg;t.classList.add("show");clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove("show"),350+3600);}
 function openSheet(html){closeKeyboard();const s=$("#sheet");s.innerHTML='<div class="grab"></div>'+html;s.classList.add("open");$("#backdrop").classList.add("open");}
 const KB_ROWS=[["פ","ם","ן","ו","ט","א","ר","ק"],["ף","ך","ל","ח","י","ע","כ","ג","ד","ש"],["ץ","ת","צ","מ","נ","ה","ב","ס","ז"]];
-function kbEl(){ let el=document.getElementById("kb"); if(!el){ el=document.createElement("div"); el.id="kb"; document.body.appendChild(el);} return el; }
+function kbEl(){ let el=document.getElementById("kb"); if(!el){ el=document.createElement("div"); el.id="kb"; el.style.setProperty("--crest","url('"+LOGO+"')"); document.body.appendChild(el);} return el; }
 function openKeyboard(k){ openKeyboardFor($("#guess")); }
 function kbTarget(inp){ KB_IN=inp; }
 let KB_IN=null;
@@ -1001,22 +1021,37 @@ function loadScript(src){ return new Promise((res,rej)=>{ if(document.querySelec
 function shakeField(sel){ const f=document.querySelector(sel||"#sheet .field"); if(!f)return;
   f.classList.add("bad"); setTimeout(()=>f.classList.remove("bad"),650);
   if(!reduceMotion&&typeof gsap!=="undefined") gsap.fromTo(f,{x:0},{keyframes:{x:[0,-10,9,-7,5,-2,0]},duration:.45,ease:"none"}); }
+function flyName(nm,from,to,onLand){
+  const fl=document.createElement("div"); fl.className="chip-fly"; fl.textContent=nm; document.body.appendChild(fl);
+  const w=fl.offsetWidth,hh=fl.offsetHeight;
+  gsap.set(fl,{x:from.left+from.width/2-w/2,y:from.top+from.height/2-hh/2});
+  gsap.timeline({onComplete:()=>fl.remove()})
+   .from(fl,{scale:.6,opacity:0,duration:.18})
+   .to(fl,{x:to.left+to.width/2-w/2,y:to.top+to.height/2-hh/2,scale:.85,duration:.55,ease:"power2.inOut"},"+=.12")
+   .add(()=>{ if(onLand) onLand(); }).to(fl,{opacity:0,duration:.08});
+}
 function wrongFx(nm){
   buzz("wrong"); shakeField();
   if(reduceMotion||typeof gsap==="undefined") return;
   const chip=[...document.querySelectorAll("#sheet .kchip")].find(c=>c.firstChild&&c.firstChild.textContent===nm);
   const f=document.querySelector("#sheet .field"); if(!chip||!f) return;
-  const a=f.getBoundingClientRect(), b=chip.getBoundingClientRect();
-  if(b.top>innerHeight-10||b.bottom<0) return;
-  const fl=document.createElement("div"); fl.className="chip-fly"; fl.textContent=nm; document.body.appendChild(fl);
-  const w=fl.offsetWidth,hh=fl.offsetHeight;
-  gsap.set(fl,{x:a.left+a.width/2-w/2,y:a.top+a.height/2-hh/2}); gsap.set(chip,{opacity:0});
-  gsap.timeline({onComplete:()=>fl.remove()})
-   .from(fl,{scale:.6,opacity:0,duration:.18})
-   .to(fl,{x:b.left+b.width/2-w/2,y:b.top+b.height/2-hh/2,scale:.85,duration:.55,ease:"power2.inOut"},"+=.15")
-   .set(chip,{opacity:1}).to(fl,{opacity:0,duration:.08})
-   .fromTo(chip,{scale:1.35},{scale:1,duration:.45,ease:"back.out(3)"},"<");
-  const kc=document.querySelector("#sheet .kn-c"); if(kc) gsap.fromTo(kc,{scale:1.7},{scale:1,duration:.5,ease:"back.out(3)",delay:.85});
+  const start=f.getBoundingClientRect();
+  const sr=document.getElementById("sheet").getBoundingClientRect(), b0=chip.getBoundingClientRect();
+  const hidden=b0.bottom>Math.min(sr.bottom,innerHeight)-6||b0.top<Math.max(sr.top,0)+6;
+  gsap.set(chip,{opacity:0});
+  if(hidden) chip.scrollIntoView({block:"nearest",behavior:"smooth"});   // bring the notebook into view first
+  setTimeout(()=>{
+    if(!chip.isConnected){ return; }
+    flyName(nm,start,chip.getBoundingClientRect(),()=>{
+      gsap.set(chip,{opacity:1}); gsap.fromTo(chip,{scale:1.35},{scale:1,duration:.45,ease:"back.out(3)"});
+      const kc=document.querySelector("#sheet .kn-c"); if(kc) gsap.fromTo(kc,{scale:1.7},{scale:1,duration:.5,ease:"back.out(3)"});
+    });
+  },hidden?420:0);
+}
+function placeWrongFly(nm,slotEl){
+  if(reduceMotion||typeof gsap==="undefined"||!slotEl) return;
+  const to=document.getElementById("gcount"); if(!to) return;
+  flyName(nm,slotEl.getBoundingClientRect(),to.getBoundingClientRect(),()=>gsap.fromTo(to,{scale:1.25},{scale:1,duration:.45,ease:"back.out(3)"}));
 }
 const CTR={};
 function rollIf(id,val,key){
@@ -1381,6 +1416,7 @@ function pitchLines(){return '<svg class="lines" viewBox="0 0 68 100" preserveAs
 
 function renderPlay(){
   const g=getGame(); if(!g){show("home");return;}
+  { const s=jget(LD_K,null); if(!s||s.id!==g.id){ Object.keys(LD_OPEN).forEach(x=>delete LD_OPEN[x]); saveLd(); } }
   const p=getProg(g); saveProg(p);
   $("#playTitle").textContent="ברצלונה נגד "+(g.opp||"היריבה");
   const slots=slotsOf(g.formation); let done=0;
@@ -1511,7 +1547,7 @@ function renderSlotSheet(k,resultHtml,keepValue,focusInput){
   const PIXN=PIX_STEPS.length, pv=Math.min(H.pix||0,PIXN);
   const pixBody=ph?'<div class="pixwrap"><canvas class="pix" width="320" height="320" data-lvl="'+pv+'"></canvas><div class="pix-side"><b>שלב '+pv+' מתוך '+PIXN+'</b>'+
     (pv<PIXN?'<button class="btn ghost sm" data-pix>לחדד עוד</button>':'<small>זה הכי חד שנגיע. השאר עלייך.</small>')+'</div></div>':'';
-  let ladder='<div class="ladder'+((LD_OPEN[k]||hintCount(st)>0)?' open':'')+'" id="ladder">'+
+  let ladder='<div class="ladder'+(LD_OPEN[k]?' open':'')+'" id="ladder">'+
     '<button class="ld-head" id="ldToggle"><b>רמזים</b><small>לא עולים כלום</small><i class="chev"></i></button><div class="ld-list">'+
     row("cands","מי משחק בעמדה הזו","השחקנים בסגל שזו העמדה הטבעית שלהם",1,'<button class="btn ghost sm" data-reopen="cands">לרשימת ה'+esc(cat)+'</button>')+
     row("nat","לאום","מאיזו מדינה הוא",2,'<div class="ld-val">'+esc(pl&&pl.nat||"לא הוזן")+'</div>')+
@@ -1570,7 +1606,7 @@ function renderSlotSheet(k,resultHtml,keepValue,focusInput){
     if(focusRow){ const r=document.querySelector('[data-row="'+focusRow+'"]'); if(r){ r.scrollIntoView({block:"nearest",behavior:reduceMotion?"auto":"smooth"});
       const body=r.querySelector(".ld-body"); if(body&&typeof gsap!=="undefined"&&!reduceMotion) gsap.from(body,{opacity:0,y:-8,duration:.35,ease:"power2.out"}); } } };
   let _pp=null; const pp0=()=>_pp||(_pp=getProg(g));
-  $("#ldToggle").onclick=()=>{ LD_OPEN[k]=!$("#ladder").classList.contains("open"); $("#ladder").classList.toggle("open",LD_OPEN[k]); };
+  $("#ldToggle").onclick=()=>{ LD_OPEN[k]=!$("#ladder").classList.contains("open"); $("#ladder").classList.toggle("open",LD_OPEN[k]); saveLd(); };
   document.querySelectorAll("[data-lh]").forEach(b=>b.onclick=()=>{
     if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
     const id=b.dataset.lh; const s=pp0().slots[k]; if(!s.log)s.log=[];
@@ -1601,7 +1637,9 @@ function renderSlotSheet(k,resultHtml,keepValue,focusInput){
   $("#revealBtn").onclick=()=>{ if(document.activeElement&&document.activeElement.blur)document.activeElement.blur(); openTellMe(k); };
 }
 
-const LD_OPEN={};
+const LD_K="fcb_ld_v1";
+const LD_OPEN=(function(){ const s=jget(LD_K,null), g=getGame(); return (s&&g&&s.id===g.id)?s.open:{}; })();
+function saveLd(){ const g=getGame(); if(g) jset(LD_K,{id:g.id,open:LD_OPEN}); }
 const PIX_STEPS=[6,9,14,22]; // blocks across the photo at each step
 function drawPix(cv,src,lvl){
   if(!src||!lvl) return;
@@ -1785,7 +1823,7 @@ function evaluate(k,pid){
     else if(f.t==="line"&&f.line!==myLine)ruled=true;
     if(ruled){
       $("#res").innerHTML='<div class="result rk"><b>'+pick(MSG.known)+'</b>'+esc(nm)+' – '+esc(factText(g,f))+'. נסי מישהו אחר.</div>';
-      return;
+      wrongFx(nm); return;
     }
   }
 
@@ -1992,6 +2030,7 @@ function doPlace(k,pid){
   if(!p.allWrong)p.allWrong={}; p.allWrong[pid]=(p.allWrong[pid]||0)+1;
   if(where) learn(p,pid,{t:"line",line:hisLine});
   saveProg(p); renderPlay();
+  placeWrongFly(nm,document.querySelector('[data-slot="'+k+'"] .shirt'));
   overlay('<div class="placewrong fx2"><div class="flag-wrap">'+FLAG_SVG+'</div><b class="fx-title">לא כאן</b><small>'+esc(nm)+' לא משחק כ'+esc(labelOf(g,k))+'.</small>'+
     '<div class="fin-foot"><button class="btn ghost" id="pwAgain">לנסות שוב</button><button class="btn ghost" id="pwStop">להמשיך לעמדות אחרות</button></div></div>','fxo'); flagFx();
   $("#pwAgain").onclick=()=>{ hideOverlay(); };
