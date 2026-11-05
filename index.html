@@ -755,6 +755,13 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 #reviewBtn{margin:4px 0 26px}
 #reviewBtn+.fin-foot{margin-top:0}
 .finish{background:linear-gradient(180deg,#0a1438,#070f2c)}
+
+/* ===== pass 11: keyboard behaves like a phone keyboard ===== */
+#kb,#kb *{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#kb{touch-action:none}
+.kb-k:focus,.kb-k:focus-visible{outline:none}
+.kb-row{gap:5px}
+.kb-k{height:46px}
 </style>
 </head>
 <body>
@@ -838,7 +845,7 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 <h2>רמזים</h2>
 <p>בכל עמדה יש שורת "רמזים". היא סגורה עד שפותחים אותה, ונשארת כמו שהשארת אותה: פתחת, היא פתוחה, סגרת, היא סגורה. כל רמז נפתח במקום, ואפשר לקחת כמה שרוצים. הם לא עולים כלום:</p>
 <ul>
-<li><b>מי משחק בעמדה הזו</b>: כל השחקנים בסגל שזו העמדה הטבעית שלהם. זה לא אומר מי פותח היום.</li>
+<li><b>מי משחק בעמדה הזו</b>: כל השחקנים בסגל שזו העמדה הטבעית שלהם. לחיצה על שחקן ברשימה מציבה אותו בעמדה כניחוש, בדיוק כאילו כתבת את השם. הרשימה עצמה לא אומרת מי פותח היום.</li>
 <li><b>לאום</b> של השחקן.</li>
 <li><b>תמונה מפוקסלת</b>: התמונה שלו בפיקסלים גסים, שמתחדדת בכל לחיצה, בארבעה שלבים.</li>
 <li><b>אותיות השם</b>: כמה אותיות יש בשם הפרטי ובשם המשפחה, וכפתור לחשיפת אות, שוב ושוב, עד שהשם מתגלה.</li>
@@ -851,7 +858,7 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 
 <h2>כרטיסים, VAR והפסקת שתייה</h2>
 <p>שני ניחושים שגויים באותה עמדה מביאים כרטיס צהוב, ושלושה מביאים אדום. אבל אל דאגה: ה-VAR תמיד מבטל את האדום, כי על ניחוש לא מוציאים אף אחד מהמשחק.</p>
-<p>אחרי 15 ניחושים יש הפסקת שתייה של עשר שניות. אפשר לחכות, או ללחוץ "חזרה למגרש" ולהמשיך מיד.</p>
+<p>מיד אחרי הניחוש ה-15 יש הפסקת שתייה של עשר שניות. אפשר לחכות, או ללחוץ "חזרה למגרש" ולהמשיך מיד.</p>
 
 <h2>בסוף המשחק</h2>
 <p>כשכל 11 העמדות נסגרות, השופט שורק לסיום: גביע, זיקוקים, וההרכב הפותח נוחת על המגרש שחקן אחרי שחקן. מי שפיצחת בניסיון ראשון, בלי טעות ובלי רמז, מקבל טבעת זהב.</p>
@@ -1001,20 +1008,52 @@ function openKeyboardFor(inp){
     '</div></div>';
   el.classList.add("open"); document.body.classList.add("kb-on");
   requestAnimationFrame(()=>{ document.documentElement.style.setProperty("--kbh", el.offsetHeight+"px"); });
-  el.querySelectorAll("[data-c]").forEach(b=>b.onclick=ev=>{
-    ev.preventDefault();
-    const tgt=KB_IN||inp; if(!tgt||!tgt.isConnected)return;
-    const c=b.dataset.c;
+  const typeKey=c=>{ const tgt=KB_IN||inp; if(!tgt||!tgt.isConnected)return;
     if(c==="BS"){ tgt.value=tgt.value.slice(0,-1); return; }
-    if(tgt.value.length<28) tgt.value+=c;
+    if(tgt.value.length<28) tgt.value+=c; };
+  el.querySelectorAll(".kb-k").forEach(b=>{
+    const c=b.dataset.c; let rep1=null, rep2=null, live=false;
+    const stopRepeat=()=>{ clearTimeout(rep1); clearInterval(rep2); rep1=rep2=null; };
+    b.onclick=ev=>ev.preventDefault();                                 // input happens on pointer events only
+    b.onpointerdown=ev=>{ ev.preventDefault(); live=true; try{ b.setPointerCapture(ev.pointerId); }catch(e){}
+      b.classList.add("pop"); buzz("tap");
+      if(c==="BS"){ typeKey("BS"); rep1=setTimeout(()=>{ rep2=setInterval(()=>{ typeKey("BS"); buzz("tap"); },70); },420); } };
+    b.onpointerup=ev=>{ if(live&&c!=="BS") typeKey(c); live=false; stopRepeat(); setTimeout(()=>b.classList.remove("pop"),70); };
+    b.onpointercancel=()=>{ live=false; stopRepeat(); b.classList.remove("pop"); };
   });
-  el.querySelectorAll(".kb-k").forEach(b=>{ b.onpointerdown=()=>{ b.classList.add("pop"); buzz("tap"); };
-    const up=()=>setTimeout(()=>b.classList.remove("pop"),90); b.onpointerup=up; b.onpointerleave=up; b.onpointercancel=up; });
   setTimeout(()=>{const s=$("#sheet"); if(s)s.scrollTop=0;},10);
 }
 function closeKeyboard(){ const el=document.getElementById("kb"); if(el)el.classList.remove("open"); document.body.classList.remove("kb-on"); }
 function closeSheet(){ closeKeyboard();$("#sheet").classList.remove("open");$("#backdrop").classList.remove("open");currentSlot=null;}
 $("#backdrop").onclick=closeSheet;
+/* Back button: while the app is anywhere but the bare home screen, one history entry is kept as a sentinel.
+   Pressing back consumes it, we undo exactly one layer, and the sentinel is restored if needed. */
+let HS_SENT=false, HS_SKIP=false;
+function atRoot(){
+  const kb=document.getElementById("kb"), o=document.getElementById("ovl");
+  return $("#home").classList.contains("active")&&!$("#sheet").classList.contains("open")&&!(kb&&kb.classList.contains("open"))&&
+    !(o&&o.classList.contains("show"))&&!$("#finish").classList.contains("show");
+}
+function syncHistory(){
+  const root=atRoot();
+  if(!root&&!HS_SENT){ try{ history.pushState({lineup:1},""); HS_SENT=true; }catch(e){} }
+  else if(root&&HS_SENT){ HS_SENT=false; HS_SKIP=true; try{ history.back(); }catch(e){ HS_SKIP=false; } }
+}
+function goBackOne(){
+  const kb=document.getElementById("kb"), o=document.getElementById("ovl");
+  const click=sel=>{ const b=document.querySelector(sel); if(b){ b.click(); return true; } return false; };
+  if(kb&&kb.classList.contains("open")){ closeKeyboard(); return; }
+  if(o&&o.classList.contains("show")){ if(click("#pwAgain")||click("#skipBrk")) return; return; }   // timed animations finish by themselves
+  if($("#finish").classList.contains("show")){ if(click("#rvQuit")||click("#finishBtn")) return; $("#finish").classList.remove("show"); show("home"); return; }
+  if($("#sheet").classList.contains("open")){ if(click("#sheet [data-back]")) return; closeSheet(); return; }
+  const pb=$("#placeBar"); if(pb&&!pb.hidden&&click("#pbCancel")) return;
+  if(!$("#home").classList.contains("active")) show("home");
+}
+window.addEventListener("popstate",()=>{
+  if(HS_SKIP){ HS_SKIP=false; return; }
+  HS_SENT=false; goBackOne(); setTimeout(syncHistory,60);
+});
+setInterval(syncHistory,300);
 function fmtDay(s){const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s||"");return m?m[3]+"."+m[2]+"."+m[1].slice(2):(s||"");}
 function todayStr(){const t=new Date();return t.getFullYear()+"-"+String(t.getMonth()+1).padStart(2,"0")+"-"+String(t.getDate()).padStart(2,"0");}
 function fmtDate(d){if(!d)return"";try{const dt=new Date(d);if(isNaN(dt))return d;return dt.toLocaleString("he-IL",{weekday:"long",day:"numeric",month:"numeric",hour:"2-digit",minute:"2-digit"});}catch(e){return d}}
@@ -1722,13 +1761,14 @@ function openCandSheet(k,keepRes,backFn){
   const list=squad.filter(x=>x.pos===cat);
   const extra=(EXTRA_CANDS[cat]||[]).filter(e=>byId(e.id)&&!list.some(x=>x.id===e.id));
   openSheet('<div class="sheet-head"><h2>מי משחק '+esc(cat==="שוער"?"בשער":"כ"+cat)+'</h2><button class="close" data-back>סגירה</button></div>'+
-    '<p class="sub-s">אלה השחקנים בסגל שהעמדה הטבעית שלהם מתאימה ל'+esc(labelOf(g,k))+'. לחיצה על שחקן פותחת עליו מידע. זה לא מגלה מי פותח היום.</p>'+
+    '<p class="sub-s">אלה השחקנים בסגל שהעמדה הטבעית שלהם מתאימה ל'+esc(labelOf(g,k))+'. לחיצה על שחקן מציבה אותו בעמדה כניחוש. הרשימה לא מגלה מי פותח היום.</p>'+
     '<div class="pgrid">'+list.map(x=>pcard(x)).join("")+'</div>'+
     (extra.length?'<div class="section-t">ואולי גם</div><div class="pgrid">'+extra.map(e=>pcard(byId(e.id),e.note,"warn")).join("")+'</div>':'')+
     '<div class="foot-note">ולפעמים פליק פשוט מפתיע ושם כאן מישהו שזו בכלל לא העמדה שלו, אז אל תסתמכי רק על הרשימה.</div>');
   const backC=backFn||(()=>{currentSlot=k;renderSlotSheet(k,keepRes||null,"",false)});
   document.querySelectorAll("[data-back]").forEach(b=>b.onclick=backC);
-  document.querySelectorAll("[data-info]").forEach(b=>b.onclick=()=>openInfoDetail(k,b.dataset.info,keepRes,()=>openCandSheet(k,keepRes,backFn)));
+  document.querySelectorAll("[data-info]").forEach(b=>b.onclick=()=>{
+    currentSlot=k; renderSlotSheet(k,null,"",false); evaluate(k,b.dataset.info); });
 }
 function openInfoPicker(k,keepRes,backFn){
   const g=getGame();
@@ -1829,12 +1869,19 @@ function doCheck(k){
   });
 }
 
-function maybeBreak(p){
-  if(p.guesses===15 && !p.broke && !Object.values(p.slots).every(s=>s.done)){
-    p.broke=true; saveProg(p); setTimeout(waterBreak,600); return true;
-  }
-  return false;
+function maybeBreak(p){ return false; }   // the break is now driven by breakWatch()
+function busyScreen(){
+  const o=document.getElementById("ovl");
+  return (o&&o.classList.contains("show"))||document.querySelector(".fly2,.goal-fx,.chip-fly")||$("#finish").classList.contains("show");
 }
+setInterval(function breakWatch(){
+  if(!$("#play").classList.contains("active")) return;
+  const g=getGame(); if(!g) return; const p=getProg(g);
+  if((p.guesses||0)<15||p.broke) return;
+  if(Object.values(p.slots).every(s=>s.done)) return;
+  if(busyScreen()) return;                       // wait for cards, VAR, reveals to finish
+  p.broke=true; saveProg(p); closeKeyboard(); waterBreak();
+},500);
 function evaluate(k,pid){
   const g=getGame(); const p=getProg(g); const st=p.slots[k]; const pl=byId(pid);
   const nm=callName(pl); const myLine=lineOf(g,k); if(!st.log)st.log=[];
