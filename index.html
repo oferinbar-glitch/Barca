@@ -1006,7 +1006,8 @@ let squad = jget(K.squad,null) || JSON.parse(JSON.stringify(DEFAULT_SQUAD));
 function saveSquad(){jset(K.squad,squad)}
 let customPhotos = jget("fcb_photos_v1",{});
 function savePhotos(){jset("fcb_photos_v1",customPhotos)}
-function photoOf(id){ if(customPhotos[id]===null) return null; return customPhotos[id]||DEFAULT_PHOTOS[id]||null; }
+const CARD_FACES={p5:"assets/faces/balde.webp",p25:"assets/faces/bardghji.webp",p8:"assets/faces/christensen.webp",p16:"assets/faces/olmo.webp",p17:"assets/faces/dejong.webp",p11:"assets/faces/ericgarcia.webp",p14:"assets/faces/fermin.webp",p13:"assets/faces/gavi.webp",p21:"assets/faces/yamal.webp",p22:"assets/faces/raphinha.webp",p23:"assets/faces/adeyemi.webp",p18:"assets/faces/bernal.webp",p12:"assets/faces/farinas.webp",p4:"assets/faces/cancelo.webp",p9:"assets/faces/martin.webp",p10:"assets/faces/kounde.webp",p6:"assets/faces/cubarsi.webp",p28:"assets/faces/pedri.webp",p2:"assets/faces/szczesny.webp",p24:"assets/faces/gordon.webp",p20:"assets/faces/abdelkarim.webp",p19:"assets/faces/jesus.webp",p1:"assets/faces/joangarcia.webp",p3:"assets/faces/livakovic.webp",p15:"assets/faces/rodri.webp",p7:"assets/faces/espart.webp"};
+function photoOf(id){ if(CARD_FACES[id]) return CARD_FACES[id]; if(customPhotos[id]===null) return null; return customPhotos[id]||DEFAULT_PHOTOS[id]||null; }
 function getGame(){const v=sget(K.game);return v?dec(v):null}
 function setGame(g){if(g)sset(K.game,enc(g));else sdel(K.game)}
 function byId(id){return squad.find(p=>p.id===id)}
@@ -2139,7 +2140,7 @@ function cardReveal(pl,el,src){
   t.fromTo(dim,{opacity:0},{opacity:1,duration:.25})
    .fromTo(wrap,{scale:.25,y:120,opacity:0},{scale:1,y:0,opacity:1,duration:.45,ease:"back.out(1.6)"},"<")
    .fromTo(rays,{scale:.3,opacity:0},{scale:1,opacity:1,duration:.5,ease:"power2.out"},"-=.15")
-   .fromTo(flip,{rotationY:180},{rotationY:0,duration:.38,ease:"power2.inOut",onStart:()=>buzz("ok")},"-=.45")
+   .fromTo(flip,{rotationY:180},{rotationY:0,duration:.26,ease:"power2.inOut",onStart:()=>buzz("ok")},"-=.62")
    .fromTo(shine,{xPercent:-160},{xPercent:260,duration:.6,ease:"power2.inOut"},"-=.1")
    .to({}, {duration:.75})                                                  // a beat to look at the card
    .to(rays,{opacity:0,scale:.6,duration:.25})
