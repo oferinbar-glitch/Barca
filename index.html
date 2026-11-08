@@ -793,6 +793,12 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 .comp-em{height:30px;width:auto;margin-bottom:6px}
 .opp-hint{display:flex;align-items:center;gap:8px;min-height:26px;margin-top:6px;font-size:12.5px;color:var(--ink-soft)}
 .opp-hint img{height:24px;width:auto}
+
+/* ===== pass 15: kickoff countdown ===== */
+.cdn-anim{width:250px;height:250px;margin-bottom:-22px}
+.cdn-lbl{font-family:var(--f-display);font-weight:700;font-size:34px;line-height:1;color:var(--chalk);letter-spacing:.4px}
+.cdn-num{font-family:var(--f-display);font-weight:700;font-size:150px;line-height:.9;color:var(--gold);margin-top:10px;
+  text-shadow:0 0 40px rgba(237,187,0,.45),0 8px 30px rgba(0,0,0,.5);min-height:135px;perspective:400px}
 </style>
 </head>
 <body>
@@ -850,6 +856,7 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 <p>לנחש את ההרכב הפותח של ברצלונה, שחקן אחרי שחקן, כל אחד בעמדה המדויקת שלו. בלי ניקוד, בלי לחץ, רק את מול פליק.</p>
 
 <h2>מנחשים</h2>
+<p>בלחיצה על "את המאמנת היום" השופט שורק לפתיחה, ספירה לאחור מחמש, ונכנסים למגרש.</p>
 <p>המגרש תמיד בנוי 4-3-3: שוער, ארבעה בהגנה, שלושה בקישור ושלושה בהתקפה. לוחצים על עמדה, כותבים את שם השחקן במקלדת ולוחצים "בדיקה". אפשר לעבור בין עמדות בכל סדר, לצאת מעמדה ולחזור אליה, ולנסות כמה פעמים שבא לך.</p>
 <p>אפשר לרשום שם מלא, שם פרטי, שם משפחה, או השם שנהוג לקרוא לשחקן. אם השם נכתב באופן לא מדויק, המערכת תדע להציע לך את השחקן הנכון.</p>
 
@@ -1171,7 +1178,7 @@ function playLottie(el,name,opts){
     return a;
   }).catch(()=>{ LOT[name]=null; return null; });
 }
-setTimeout(()=>{ lottieLib().then(()=>["whistle","trophy","goal"].forEach(n=>lottieData(n).catch(()=>{ LOT[n]=null; }))).catch(()=>{}); },2500);
+setTimeout(()=>{ lottieLib().then(()=>["whistle","trophy","goal","loader"].forEach(n=>lottieData(n).catch(()=>{ LOT[n]=null; }))).catch(()=>{}); },2500);
 function goalFx(){
   if(reduceMotion) return;
   const d=document.createElement("div"); d.className="goal-fx"; document.body.appendChild(d);
@@ -1418,6 +1425,28 @@ function fxOut(box,cb){
   if(HAS_G()&&!reduceMotion){ gsap.to(box,{opacity:0,y:-18,scale:.97,duration:.28,ease:"power1.in",onComplete:()=>{hideOverlay();cb&&cb();}}); }
   else { hideOverlay(); cb&&cb(); }
 }
+function countdown(done,from){
+  let n=from||5;
+  const el=overlay('<div class="fx2 cdn"><div class="cdn-anim"></div><div class="cdn-lbl">מתחילים בעוד</div>'+
+    '<div class="cdn-num" aria-live="polite">'+n+'</div></div>','fxo');
+  const B=el.firstElementChild, num=el.querySelector(".cdn-num");
+  playLottie(el.querySelector(".cdn-anim"),"loader",{loop:true});
+  const pop=()=>{ buzz("tap");
+    if(typeof gsap!=="undefined"&&!reduceMotion) gsap.fromTo(num,{scale:1.9,opacity:0,rotationX:-70},{scale:1,opacity:1,rotationX:0,duration:.45,ease:"back.out(2.4)"}); };
+  if(typeof gsap!=="undefined"&&!reduceMotion){
+    gsap.from(el.querySelector(".cdn-anim"),{scale:.6,opacity:0,duration:.5,ease:"back.out(1.8)"});
+    gsap.from(el.querySelector(".cdn-lbl"),{y:12,opacity:0,duration:.4,delay:.15});
+  }
+  pop();
+  const t=setInterval(()=>{
+    n--;
+    if(n<=0){ clearInterval(t); buzz("kick");
+      if(typeof gsap!=="undefined"&&!reduceMotion) gsap.to(num,{scale:1.6,opacity:0,duration:.3,ease:"power2.in"});
+      setTimeout(()=>fxOut(B,()=>{ if(done)done(); }),reduceMotion?0:250);
+      return; }
+    num.textContent=n; pop();
+  },1000);
+}
 function kickoff(done){
   whistle(); buzz('kick');
   const el=overlay('<div class="fx2 ko2"><div class="ko-stage">'+
@@ -1434,7 +1463,7 @@ function kickoff(done){
      .add(splitIn(q(".fx-title")[0])||gsap.timeline(),"-=.5")
      .from(q(".fx-sub"),{y:12,opacity:0,duration:.4},"-=.25");
   }
-  setTimeout(()=>fxOut(B,()=>{ if(done)done(); }),reduceMotion?3600:4500);
+  setTimeout(()=>fxOut(B,()=>countdown(done)),reduceMotion?3600:4500);
 }
 function showCard(color,text,after){
   whistle(); buzz(color);

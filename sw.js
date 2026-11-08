@@ -1,5 +1,5 @@
 // Network-first: always the newest version when online; cached copy when offline.
-const CACHE = "lineup-a75a189c";
+const CACHE = "lineup-701054e0";
 const CORE = [
   "./",
   "index.html",
@@ -56,11 +56,16 @@ const CORE = [
   "assets/img/f146fcefe5.webp",
   "assets/lottie.min.js",
   "assets/lottie/goal.json",
+  "assets/lottie/loader.json",
   "assets/lottie/trophy.json",
   "assets/lottie/whistle.json",
+  "assets/teams/P.png",
   "assets/teams/S.png",
   "assets/teams/atletico.png",
   "assets/teams/barcelona.png",
+  "assets/teams/p-a.png",
+  "assets/teams/p-b.png",
+  "assets/teams/p-op.png",
   "assets/teams/s-home.png",
   "assets/teams/s-op.png",
   "assets/teams/s-op2.png",
