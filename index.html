@@ -1291,7 +1291,7 @@ function renderHome(){
 }
 $("#startBtn").onclick=()=>{ if(!getGame())return; const p=jget(K.prog,null); const g=getGame();
   const fresh=!p||p.gameId!==g.id||!Object.values(p.slots||{}).some(s=>s.done||s.tries.length);
-  if(fresh) kickoff(()=>show("play")); else show("play"); };
+  if(fresh){ bgPrime(); kickoff(()=>show("play")); } else show("play"); };
 
 /* ===================== PLAY ===================== */
 let currentSlot=null; let PLACE=null;
@@ -1310,6 +1310,9 @@ const AU={};
 function sfx(name,vol){ try{ let a=AU[name]; if(!a){ a=new Audio(SFX[name]); a.preload='auto'; AU[name]=a; } a.pause(); a.currentTime=0; a.volume=vol===undefined?1:vol; const pr=a.play(); if(pr&&pr.catch)pr.catch(()=>{}); }catch(e){} }
 let BG=null; const BG_VOL=0.30; let muted=(sget('fcb_mute')==='1');
 function bgStart(){ if(muted)return; try{ if(BG&&BG.volume!==BG_VOL)BG.volume=BG_VOL; if(!BG){ BG=new Audio(SFX.bg); BG.loop=true; BG.volume=BG_VOL; BG.id='bgaudio'; BG.style.display='none'; document.body.appendChild(BG); } const pr=BG.play(); if(pr&&pr.catch)pr.catch(()=>{}); }catch(e){} }
+function bgPrime(){ if(muted)return; try{ if(!BG){ BG=new Audio(SFX.bg); BG.loop=true; BG.volume=BG_VOL; BG.id='bgaudio'; BG.style.display='none'; document.body.appendChild(BG); }
+  const pr=BG.play(); const stop=()=>{ try{ if(!BG.dataset.live){ BG.pause(); BG.currentTime=0; } }catch(e){} };
+  if(pr&&pr.then) pr.then(stop).catch(()=>{}); else stop(); }catch(e){} }
 function bgStop(){ try{ if(BG){BG.pause();} }catch(e){} }
 function duck(on){ try{ if(BG&&!muted) BG.volume=on?0.07:BG_VOL; }catch(e){} }
 const HEAD_ON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="2.5" y="14" width="4.5" height="6.5" rx="2"/><rect x="17" y="14" width="4.5" height="6.5" rx="2"/></svg>';
@@ -1431,6 +1434,7 @@ function countdown(done,from){
     '<div class="cdn-num" aria-live="polite">'+n+'</div></div>','fxo');
   const B=el.firstElementChild, num=el.querySelector(".cdn-num");
   playLottie(el.querySelector(".cdn-anim"),"loader",{loop:true});
+  if(BG) BG.dataset.live="1"; bgStart();
   const pop=()=>{ buzz("tap");
     if(typeof gsap!=="undefined"&&!reduceMotion) gsap.fromTo(num,{scale:1.9,opacity:0,rotationX:-70},{scale:1,opacity:1,rotationX:0,duration:.45,ease:"back.out(2.4)"}); };
   if(typeof gsap!=="undefined"&&!reduceMotion){
