@@ -1,5 +1,5 @@
 // Network-first: always the newest version when online; cached copy when offline.
-const CACHE = "lineup-08e859f0";
+const CACHE = "lineup-17868039";
 const CORE = [
   "./",
   "index.html",
@@ -9,6 +9,9 @@ const CORE = [
   "assets/audio/crowd.mp3",
   "assets/audio/var.mp3",
   "assets/audio/whistle.mp3",
+  "assets/cards/mask.png",
+  "assets/cards/raphinha.webp",
+  "assets/cards/yamal.webp",
   "assets/comp/cup.png",
   "assets/comp/laliga.png",
   "assets/comp/ucl.png",

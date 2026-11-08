@@ -812,6 +812,23 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 .mi-flash{position:absolute;left:50%;top:40%;width:260px;height:260px;margin:-130px 0 0 -130px;border-radius:50%;pointer-events:none;
   background:radial-gradient(circle,rgba(255,250,220,.9),rgba(237,187,0,.35) 40%,transparent 70%)}
 .mi-fly{position:fixed;z-index:120;pointer-events:none;object-fit:contain;transform-origin:50% 50%;margin:0;filter:drop-shadow(0 10px 18px rgba(0,0,0,.5))}
+
+/* ===== pass 19: player cards (trial) ===== */
+.card-dim{background:radial-gradient(circle at 50% 36%,rgba(10,20,56,.55),rgba(4,9,26,.92) 70%)}
+.pcard3d{position:fixed;z-index:76;pointer-events:none;perspective:1100px;will-change:transform}
+.pc-rays{position:absolute;inset:-55%;border-radius:50%;
+  background:repeating-conic-gradient(from 0deg,rgba(237,187,0,.28) 0 6deg,transparent 6deg 18deg);
+  -webkit-mask:radial-gradient(circle,#000 22%,transparent 66%);mask:radial-gradient(circle,#000 22%,transparent 66%)}
+.pc-flip{position:absolute;inset:0;transform-style:preserve-3d}
+.pc-front,.pc-back{position:absolute;inset:0;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.pc-front{overflow:hidden;-webkit-mask:url("assets/cards/mask.png") center/100% 100%;mask:url("assets/cards/mask.png") center/100% 100%;filter:drop-shadow(0 22px 40px rgba(0,0,0,.6))}
+.pc-front img{width:100%;height:100%;display:block}
+.pc-shine{position:absolute;top:-10%;bottom:-10%;left:0;width:38%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.75),transparent);transform:skewX(-16deg);mix-blend-mode:overlay}
+.pc-back{transform:rotateY(180deg);display:grid;place-items:center;background:linear-gradient(160deg,#ffe58a,#c99a12 45%,#f2cf55 70%,#a97c07);
+  -webkit-mask:url("assets/cards/mask.png") center/100% 100%;mask:url("assets/cards/mask.png") center/100% 100%}
+.pc-back::before{content:"";position:absolute;inset:3.2% 4%;background:repeating-linear-gradient(90deg,#1d4fa8 0 14%,#8a0a3d 14% 28%);
+  -webkit-mask:url("assets/cards/mask.png") center/100% 100%;mask:url("assets/cards/mask.png") center/100% 100%}
+.pc-back img{position:relative;width:50%;filter:drop-shadow(0 8px 16px rgba(0,0,0,.5))}
 </style>
 </head>
 <body>
@@ -2105,8 +2122,35 @@ function evaluate(k,pid){
   else maybeBreak(p);
 }
 
+/* Player cards (trial). To add one: put the image in assets/cards/ and map the player id here. */
+const PLAYER_CARDS={p21:"assets/cards/yamal.webp",p22:"assets/cards/raphinha.webp"};
+function cardReveal(pl,el,src){
+  const sh=el.querySelector(".shirt"); if(!sh)return;
+  const r=sh.getBoundingClientRect();
+  const H=Math.min(innerHeight*0.44,400), W=H*322/447;
+  const dim=document.createElement("div"); dim.className="fly-dim card-dim"; document.body.appendChild(dim);
+  const wrap=document.createElement("div"); wrap.className="pcard3d";
+  wrap.innerHTML='<div class="pc-rays"></div><div class="pc-flip"><div class="pc-back"><img alt="" src="'+LOGO+'"></div><div class="pc-front"><img alt="" src="'+src+'"><i class="pc-shine"></i></div></div>';
+  document.body.appendChild(wrap);
+  const cx=innerWidth/2, cy=innerHeight*0.36;
+  gsap.set(wrap,{left:cx-W/2,top:cy-H/2,width:W,height:H});
+  const flip=wrap.querySelector(".pc-flip"), rays=wrap.querySelector(".pc-rays"), shine=wrap.querySelector(".pc-shine");
+  const t=gsap.timeline({onComplete:()=>{ wrap.remove(); dim.remove(); }});
+  t.fromTo(dim,{opacity:0},{opacity:1,duration:.25})
+   .fromTo(wrap,{scale:.25,y:120,opacity:0},{scale:1,y:0,opacity:1,duration:.45,ease:"back.out(1.6)"},"<")
+   .fromTo(rays,{scale:.3,opacity:0},{scale:1,opacity:1,duration:.5,ease:"power2.out"},"-=.15")
+   .fromTo(flip,{rotationY:180},{rotationY:0,duration:.75,ease:"power3.inOut",onStart:()=>buzz("ok")},"-=.25")
+   .fromTo(shine,{xPercent:-160},{xPercent:260,duration:.7,ease:"power2.inOut"},"-=.2")
+   .to({}, {duration:.75})                                                  // a beat to look at the card
+   .to(rays,{opacity:0,scale:.6,duration:.25})
+   .to(dim,{opacity:0,duration:.35},"<")
+   .to(wrap,{left:r.left+r.width/2-W/2,top:r.top+r.height/2-H/2,scale:r.height/H*1.25,duration:.5,ease:"power3.in"},"<")
+   .to(wrap,{opacity:0,duration:.14},"-=.12");
+  gsap.to(rays,{rotation:360,duration:12,ease:"none",repeat:-1});
+}
 function flyIn(pl,el){
   if(reduceMotion||typeof gsap==="undefined")return;
+  if(PLAYER_CARDS[pl.id]){ cardReveal(pl,el,PLAYER_CARDS[pl.id]); return; }
   const ph=photoOf(pl.id);
   const sh=el.querySelector(".shirt"); if(!sh)return;
   const r=sh.getBoundingClientRect();
