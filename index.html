@@ -877,6 +877,66 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
   50%{box-shadow:0 0 0 4px var(--r-red-hi),0 0 22px rgba(255,47,120,.95),0 6px 14px rgba(0,0,0,.4)}}
 @keyframes redDot{0%,100%{box-shadow:0 0 0 2.5px var(--r-red),0 0 4px rgba(255,47,120,.3)}50%{box-shadow:0 0 0 3px var(--r-red-hi),0 0 14px rgba(255,47,120,.95)}}
 @media (prefers-reduced-motion: reduce){.xi-p.clean .xi-f,.xi-key i{animation:none}}
+
+/* ===== pass 25: floodlit pitch screen ===== */
+#play{background:radial-gradient(120% 42% at 50% -6%,#2a4fa6 0%,rgba(42,79,166,0) 62%),linear-gradient(#0d1d52,#060d29 72%);display:flex;flex-direction:column}
+#play .topbar{gap:10px;padding-bottom:6px}
+#play .icon-btn{border-radius:50%;width:42px;height:42px}
+#play .icon-btn.mute{border-radius:50%;width:42px;padding:0}
+#play .icon-btn.mute small{display:none}
+#play .topbar .t span{font-size:12px;color:#9fb0d8}
+.pips{display:flex;gap:4px;margin-top:6px}
+.pips i{flex:1;height:5px;border-radius:3px;background:rgba(255,255,255,.12);transition:background .3s,box-shadow .3s}
+.pips i.on{background:var(--gold);box-shadow:0 0 8px rgba(237,187,0,.55)}
+#play .gcount{background:none;box-shadow:none;padding:0 2px;min-width:46px}
+#play .gcount b{font-family:var(--f-display);font-size:34px;font-weight:700;color:var(--gold);line-height:.95}
+#play .gcount small{font-size:10.5px;color:#9fb0d8}
+/* broadcast score bar */
+.match-bug{grid-template-columns:1fr auto 1fr;gap:0;padding:0;height:52px;margin:4px auto 0;border-radius:0;background:none;border:0;box-shadow:none;
+  width:calc(100% - 28px);filter:drop-shadow(0 10px 20px rgba(0,0,0,.45))}
+.mb-side{height:100%;padding:0 12px;gap:8px}
+.mb-side:not(.opp){background:linear-gradient(270deg,#1d57b8,#123a8f);clip-path:polygon(0 0,100% 0,100% 100%,14px 100%)}
+.mb-side.opp{background:linear-gradient(90deg,#3a0f2a,#7a0c3c);clip-path:polygon(0 0,100% 0,calc(100% - 14px) 100%,0 100%)}
+.mb-side img{height:32px}
+.mb-side b{font-size:23px}
+.mb-vs{height:100%;display:grid;place-items:center;padding:3px 13px 0;background:var(--gold);color:#1a1300;font-size:21px;clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 100%,0 100%)}
+/* staff chips */
+.staff{justify-content:center;gap:8px;padding:10px 14px 0}
+.st-row{padding:3px 12px 3px 3px;gap:8px;background:rgba(6,13,41,.6);border:1px solid rgba(255,255,255,.1)}
+.st-row img{width:36px;height:36px;box-shadow:0 0 0 2px var(--blau),0 0 0 3px rgba(255,255,255,.3)}
+.st-row small{font-size:10.5px;color:#9fb0d8}
+.st-row b{font-size:13px;font-weight:600}
+/* the pitch */
+.pitch-area{flex:1;min-height:0;display:flex;align-items:flex-start;justify-content:center;padding:6px 6px 10px;perspective:none;position:relative}
+.pitch-area::before{content:"";position:absolute;inset:-40px 0 auto;height:60%;pointer-events:none;
+  background:radial-gradient(55% 45% at 6% 0%,rgba(190,215,255,.22),transparent 70%),radial-gradient(55% 45% at 94% 0%,rgba(190,215,255,.22),transparent 70%)}
+.pitch{transform:none!important;transform-style:flat;overflow:visible;background:none!important;box-shadow:none!important;border-radius:0!important;
+  aspect-ratio:400/700;width:min(100%,calc((100dvh - 215px)*400/700));max-width:470px}
+.pitch::before{display:none}
+.pitch svg.turf{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 30px 40px rgba(0,0,0,.55))}
+.pitch.placing{box-shadow:none!important}
+.pitch .slot{transform:translate(-50%,-50%)!important;width:30%;gap:5px}
+.pitch .shirt{width:calc(56px*var(--sc,1));height:calc(56px*var(--sc,1));border:0;
+  background:radial-gradient(circle at 50% 30%,#2a3f7e,#0d1a45 70%);box-shadow:inset 0 0 0 2px rgba(79,140,255,.55),0 0 18px rgba(79,140,255,.25)}
+.pitch .shirt::before{content:"";position:absolute;left:8%;right:8%;bottom:-9px;height:12px;border-radius:50%;background:rgba(0,0,0,.45);filter:blur(4px);z-index:-1}
+.pitch .shirt .q{font-family:var(--f-display);font-weight:700;font-size:calc(34px*var(--sc,1));line-height:1;color:var(--gold);position:relative;top:2px;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.pitch .slot.has-tries .shirt{box-shadow:inset 0 0 0 2px rgba(237,187,0,.6),0 0 18px rgba(237,187,0,.18)}
+.pitch .slot.solved .shirt,.pitch .slot[data-slot] .shirt.x{background:none}
+.pitch .slot.solved .shirt{box-shadow:0 0 0 3px var(--blau),0 0 0 4.5px rgba(255,255,255,.35),0 8px 16px rgba(0,0,0,.5)!important}
+.pitch .slot.revealed .shirt{box-shadow:0 0 0 3px #8b93a8,0 8px 16px rgba(0,0,0,.5)}
+.pitch .slot.pop .shirt::after{border-color:var(--blau-hi,#4f8cff)!important}
+.pitch .shirt .badge{display:none}
+.pitch .dots-n{top:-4px;right:auto;left:-4px;background:var(--grana);box-shadow:0 0 0 2px #0d1a45;min-width:20px;height:20px;font-size:11.5px}
+.pitch .slot .lbl{font-size:12px;padding:3px 9px;border-radius:7px;background:rgba(6,13,41,.78);color:#c9d4f2;border:1px solid rgba(255,255,255,.08)}
+.pitch .slot .nm{font-size:13px;font-weight:700;padding:3px 9px;border-radius:7px;background:var(--chalk);color:var(--night)}
+.pitch.placing .slot:not(.solved):not(.revealed) .shirt{animation:placeGlow 1.4s ease-in-out infinite}
+@keyframes placeGlow{0%,100%{box-shadow:inset 0 0 0 2px rgba(237,187,0,.7),0 0 10px rgba(237,187,0,.25)}50%{box-shadow:inset 0 0 0 3px var(--gold),0 0 24px rgba(237,187,0,.7)}}
+@media (prefers-reduced-motion: reduce){.pitch.placing .slot .shirt{animation:none}}
+#play:has(#placeBar:not([hidden])) .staff{display:none}
+#play .place-bar{padding:10px 14px 0}
+.mb-side b{font-size:clamp(18px,5.6vw,23px)}
+.mb-side{padding:0 clamp(8px,2.6vw,12px)}
+@media (max-width:370px){.pitch .slot .lbl{font-size:11px;padding:2px 7px}.pitch .slot .nm{font-size:12px;padding:2px 7px}}
 </style>
 </head>
 <body>
@@ -900,7 +960,7 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 <section id="play" class="screen">
   <div class="topbar">
     <button class="icon-btn" data-go="home" aria-label="חזרה לדף הבית"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 6l6 6-6 6"/></svg></button>
-    <div class="t"><b id="playTitle"></b><span id="playSub"></span></div>
+    <div class="t"><b id="playTitle"></b><span id="playSub"></span><i class="pips" id="pips" aria-hidden="true"></i></div>
     <div class="gcount" id="gcount"><b>0</b><small>ניחושים</small></div>
     <button class="icon-btn mute" id="muteBtn" aria-label="השתקת מוזיקה"><span class="mi"></span><small>השתק</small></button>
   </div>
@@ -1706,7 +1766,7 @@ function saveProgRaw(p){jset(K.prog,p)}
 function hintCount(st){const h=st.hints;const r=h.rev||{f:0,l:0};return (h.nat?1:0)+(h.len?1:0)+(r.f||0)+(r.l||0)+(h.cands?1:0)+((h.info||[]).length)+(h.pix||0)}
 function usedAnything(st){return st.done||st.tries.length>0||hintCount(st)>0}
 
-const Q_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M9 9a3 3 0 1 1 4 2.8c-.7.3-1 .8-1 1.5V14"/><path d="M12 18h.01"/></svg>';
+const Q_SVG='<span class="q" aria-hidden="true">?</span>';
 const CHECK_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><path d="M5 12l5 5 9-10"/></svg>';
 const BOOK_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M8 7h7M8 11h7"/></svg>';
 
@@ -1715,6 +1775,39 @@ function pitchLines(){return '<svg class="lines" viewBox="0 0 68 100" preserveAs
  '<rect x="15" y="3" width="38" height="15"/><rect x="25" y="3" width="18" height="5"/><rect x="15" y="82" width="38" height="15"/><rect x="25" y="92" width="18" height="5"/>'+
  '<path d="M27 18a8 8 0 0 0 14 0"/><path d="M27 82a8 8 0 0 1 14 0"/></svg>';}
 
+/* Floodlit pitch seen from behind our goal. Plane coords: u across (0..1), v along (0 = far goal, 1 = our goal). */
+const PV={W:400,H:700,cx:200,yb:676,d:1150,th:24*Math.PI/180,L:980,Wp:392};
+function proj(u,v){ const z=(1-v)*PV.L, s=PV.d/(PV.d+z*Math.sin(PV.th)); return [PV.cx+(u-.5)*PV.Wp*s, PV.yb-z*Math.cos(PV.th)*s, s]; }
+function polyP(pts){ return pts.map(p=>{const q=proj(p[0],p[1]);return q[0].toFixed(1)+","+q[1].toFixed(1);}).join(" "); }
+function rectP(u0,v0,u1,v1){ return '<polygon points="'+polyP([[u0,v0],[u1,v0],[u1,v1],[u0,v1]])+'"/>'; }
+function arcP(cu,cv,r,a0,a1,n){ const ru=r, rv=r*PV.Wp/PV.L, pts=[]; for(let i=0;i<=n;i++){const a=a0+(a1-a0)*i/n; pts.push([cu+ru*Math.cos(a),cv+rv*Math.sin(a)]);} return pts; }
+let TURF=null;
+function pitchTurf(){
+  if(TURF) return TURF;
+  const U0=.045,U1=.955,V0=.02,V1=.985, PB=.13, GA=.045, CR=.135;
+  let bands=""; const N=14;
+  for(let i=0;i<N;i++){ const a=-.02+i*(1.02/N), b=a+1.02/N; bands+='<polygon fill="'+(i%2?"#1b5f35":"#20703f")+'" points="'+polyP([[-.04,a],[1.04,a],[1.04,b],[-.04,b]])+'"/>'; }
+  const L=[];
+  L.push(rectP(U0,V0,U1,V1));
+  L.push('<polyline points="'+polyP([[U0,.5],[U1,.5]])+'"/>');
+  L.push('<polygon points="'+polyP(arcP(.5,.5,CR,0,2*Math.PI,64))+'"/>');
+  L.push(rectP(.5-.296,V0,.5+.296,V0+PB), rectP(.5-.134,V0,.5+.134,V0+GA));
+  L.push(rectP(.5-.296,V1-PB,.5+.296,V1), rectP(.5-.134,V1-GA,.5+.134,V1));
+  const ang=Math.acos(Math.min(1,(PB-.064)*PV.L/PV.Wp/CR));
+  L.push('<polyline points="'+polyP(arcP(.5,V0+.064,CR,Math.PI/2-ang,Math.PI/2+ang,24))+'"/>');
+  L.push('<polyline points="'+polyP(arcP(.5,V1-.064,CR,-Math.PI/2-ang,-Math.PI/2+ang,24))+'"/>');
+  const spot=(u,v,r)=>{const q=proj(u,v);return '<circle cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="'+(r*q[2]).toFixed(2)+'" fill="rgba(255,255,255,.7)" stroke="none"/>';};
+  TURF='<svg class="turf" viewBox="0 0 '+PV.W+' '+PV.H+'" aria-hidden="true"><defs>'+
+    '<radialGradient id="tfGlow" cx=".5" cy=".45" r=".6"><stop offset="0" stop-color="#fff" stop-opacity=".10"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>'+
+    '<radialGradient id="tfVig" cx=".5" cy=".5" r=".75"><stop offset=".55" stop-color="#030a1e" stop-opacity="0"/><stop offset="1" stop-color="#030a1e" stop-opacity=".6"/></radialGradient>'+
+    '<clipPath id="tfClip"><polygon points="'+polyP([[-.04,-.02],[1.04,-.02],[1.04,1],[-.04,1]])+'"/></clipPath></defs>'+
+    '<g clip-path="url(#tfClip)">'+bands+'<rect width="'+PV.W+'" height="'+PV.H+'" fill="url(#tfGlow)"/>'+
+    '<g fill="none" stroke="rgba(255,255,255,.66)" stroke-width="1.6" stroke-linejoin="round">'+L.join("")+'</g>'+
+    spot(.5,.5,2.2)+spot(.5,V0+.064,1.8)+spot(.5,V1-.064,1.8)+
+    '<rect width="'+PV.W+'" height="'+PV.H+'" fill="url(#tfVig)"/></g></svg>';
+  return TURF;
+}
+function slotPos(x,y){ const q=proj(.045+x/100*.91,.02+y/100*.965); return {l:(q[0]/PV.W*100).toFixed(2),t:(q[1]/PV.H*100).toFixed(2),s:(.84+.16*(q[2]-.74)/.26).toFixed(3)}; }
 function renderPlay(){
   const g=getGame(); if(!g){show("home");return;}
   { const s=jget(LD_K,null); if(!s||s.id!==g.id){ Object.keys(LD_OPEN).forEach(x=>delete LD_OPEN[x]); saveLd(); } }
@@ -1724,7 +1817,7 @@ function renderPlay(){
     if(mb) mb.innerHTML='<div class="mb-side"><img alt="" src="'+LOGO+'"><b>ברצלונה</b></div><span class="mb-vs">נגד</span>'+
       '<div class="mb-side opp">'+(oc?'<img alt="" src="'+oc+'" onerror="this.remove()">':'')+'<b>'+esc(g.opp||"היריבה")+'</b></div>'; }
   const slots=slotsOf(g.formation); let done=0;
-  let h=pitchLines();
+  let h=pitchTurf();
   slots.forEach(s=>{
     const st=p.slots[s.k]; if(st.done)done++;
     const cls=["slot"]; if(st.done)cls.push(st.revealed?"revealed":"solved"); else if(st.tries.length||hintCount(st))cls.push("has-tries");
@@ -1732,11 +1825,13 @@ function renderPlay(){
     let inner=Q_SVG;
     if(st.done){ inner=(ph?'<img class="face" alt="" src="'+ph+'">':'')+(st.revealed?'':(ph?'<span class="badge">'+CHECK_SVG+'</span>':CHECK_SVG)); }
     else if(st.tries.length) inner=Q_SVG+'<span class="dots-n">'+st.tries.length+'</span>';
-    h+='<button class="'+cls.join(" ")+'" data-slot="'+s.k+'" style="left:'+s.x+'%;top:'+s.y+'%" aria-label="'+esc(s.label)+'">'+
+    const sp=slotPos(s.x,s.y);
+    h+='<button class="'+cls.join(" ")+'" data-slot="'+s.k+'" style="left:'+sp.l+'%;top:'+sp.t+'%;--sc:'+sp.s+'" aria-label="'+esc(s.label)+'">'+
        '<span class="shirt">'+inner+'</span>'+
        (pl?'<span class="nm">'+esc(callName(pl))+'</span>':'<span class="lbl">'+esc(s.label)+'</span>')+'</button>';
   });
   $("#pitch").innerHTML=h; $("#playSub").innerHTML='<span class="ctr" id="doneN">'+done+'</span> מתוך 11 עמדות סגורות';
+  { const pp=$("#pips"); if(pp) pp.innerHTML=Array.from({length:11},(_,i)=>'<i'+(i<done?' class="on"':'')+'></i>').join(""); }
   $("#gcount").innerHTML='<b class="ctr" id="gN">'+(p.guesses||0)+'</b><small>ניחושים</small>'; renderMute();
   rollIf("gN",p.guesses||0,"g"); rollIf("doneN",done,"d");
   const pb=$("#placeBar");
