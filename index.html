@@ -770,6 +770,9 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 .xi-p.clean .xi-f{animation:goldPulse 1.6s ease-in-out 2.2s infinite}
 .xi-key i{animation:goldDot 1.6s ease-in-out 2.2s infinite}
 @media (prefers-reduced-motion: reduce){.xi-p.clean .xi-f,.xi-key i{animation:none}}
+
+/* ===== pass 13: competition emblem ===== */
+.tk-emblem{display:block;height:44px;width:auto;margin:0 auto 10px;opacity:.95;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}
 </style>
 </head>
 <body>
@@ -1214,6 +1217,7 @@ function fullTime(){
 }
 
 /* ===================== HOME ===================== */
+const COMP_EMBLEM={laliga:"assets/comp/laliga.png",ucl:"assets/comp/ucl.png",cup:"assets/comp/cup.png"};
 function matchDate(s){
   const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s||""); if(!m) return s||"";
   const d=new Date(+m[1],+m[2]-1,+m[3]);
@@ -1227,7 +1231,9 @@ function renderHome(){
   const body=$("#ticketBody"), btn=$("#startBtn");
   if(g){
     const c=compOf(g.comp);
-    body.innerHTML='<div class="tk-top"><span>המשחק הבא</span>'+(c?'<span>'+esc(c.name)+'</span>':'')+'</div>'+
+    const em=COMP_EMBLEM[g.comp];
+    body.innerHTML=(em?'<img class="tk-emblem" alt="" src="'+em+'" onerror="this.remove()">':'')+
+      '<div class="tk-top"><span>המשחק הבא</span>'+(c?'<span>'+esc(c.name)+'</span>':'')+'</div>'+
       '<div class="opp">נגד '+esc(g.opp||"היריבה")+'</div><div class="when">'+esc(matchDate(g.date))+'</div>';
     $("#ticketComp").innerHTML='';
     btn.disabled=false;
