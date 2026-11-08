@@ -862,6 +862,21 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 .ld-head small{color:#e8d9a6}
 .ld-head .chev{border-color:var(--gold)!important}
 .ladder.open .ld-list{border-top:1px solid rgba(237,187,0,.25)}
+
+/* ===== pass 24: blaugrana rings ===== */
+:root{--r-red:#c3004f;--r-red-hi:#ff2f78;--r-blue:#1d57b8;--r-blue-hi:#4f8cff}
+.slot[data-slot="lw"],.slot[data-slot="rw"],.slot[data-slot="cam"],.slot[data-slot="rb"],.slot[data-slot="lcb"]{--ring:var(--r-blue)}
+.slot[data-slot="st"],.slot[data-slot="lcm"],.slot[data-slot="rcm"],.slot[data-slot="rcb"],.slot[data-slot="lb"],.slot[data-slot="gk"]{--ring:var(--r-red)}
+.slot.solved .shirt{box-shadow:0 0 0 3.5px var(--ring,var(--gold)),0 5px 12px rgba(0,0,0,.35)}
+.slot.pop .shirt::after{border-color:var(--ring,var(--gold))}
+/* finish line-up */
+.xi-f{box-shadow:0 0 0 3px var(--r-blue),0 6px 14px rgba(0,0,0,.4)}
+.xi-p.clean .xi-f{box-shadow:0 0 0 3px var(--r-red),0 0 16px rgba(255,47,120,.6),0 6px 14px rgba(0,0,0,.4);animation:redPulse 1.6s ease-in-out 2.2s infinite}
+.xi-key i{box-shadow:0 0 0 2.5px var(--r-red);animation:redDot 1.6s ease-in-out 2.2s infinite}
+@keyframes redPulse{0%,100%{box-shadow:0 0 0 3px var(--r-red),0 0 8px rgba(255,47,120,.35),0 6px 14px rgba(0,0,0,.4)}
+  50%{box-shadow:0 0 0 4px var(--r-red-hi),0 0 22px rgba(255,47,120,.95),0 6px 14px rgba(0,0,0,.4)}}
+@keyframes redDot{0%,100%{box-shadow:0 0 0 2.5px var(--r-red),0 0 4px rgba(255,47,120,.3)}50%{box-shadow:0 0 0 3px var(--r-red-hi),0 0 14px rgba(255,47,120,.95)}}
+@media (prefers-reduced-motion: reduce){.xi-p.clean .xi-f,.xi-key i{animation:none}}
 </style>
 </head>
 <body>
@@ -962,7 +977,7 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 <p>מיד אחרי הניחוש ה-15 יש הפסקת שתייה של עשר שניות. אפשר לחכות, או ללחוץ "חזרה למגרש" ולהמשיך מיד.</p>
 
 <h2>בסוף המשחק</h2>
-<p>כשכל 11 העמדות נסגרות, השופט שורק לסיום: גביע, זיקוקים, וההרכב הפותח נוחת על המגרש שחקן אחרי שחקן. מי שפיצחת בניסיון ראשון, בלי טעות ובלי רמז, מקבל טבעת זהב.</p>
+<p>כשכל 11 העמדות נסגרות, השופט שורק לסיום: גביע, זיקוקים, וההרכב הפותח נוחת על המגרש שחקן אחרי שחקן. מי שפיצחת בניסיון ראשון, בלי טעות ובלי רמז, מקבל טבעת אדומה מהבהבת. כל השאר בטבעת כחולה.</p>
 <p>אחר כך מגיע הסיכום: כמה עמדות פיצחת בניסיון ראשון, כמה ניחושים ורמזים לקחת, באיזו עמדה הכי נתקעת ואיזה שחקן הכי בלבל אותך. משם אפשר לצאת לסבב חזרה קצר על השחקנים שהתקשית בהם, ולראות אם השם כבר נדבק.</p>
 </article>
 </section>
