@@ -2123,16 +2123,16 @@ function evaluate(k,pid){
 }
 
 /* Player cards (trial). To add one: put the image in assets/cards/ and map the player id here. */
-const PLAYER_CARDS={p21:"assets/cards/yamal.webp",p22:"assets/cards/raphinha.webp"};
+const PLAYER_CARDS={p5:"assets/cards/balde.webp",p25:"assets/cards/bardghji.webp",p8:"assets/cards/christensen.webp",p16:"assets/cards/olmo.webp",p17:"assets/cards/dejong.webp",p11:"assets/cards/ericgarcia.webp",p14:"assets/cards/fermin.webp",p13:"assets/cards/gavi.webp",p21:"assets/cards/yamal.webp",p22:"assets/cards/raphinha.webp"};
 function cardReveal(pl,el,src){
   const sh=el.querySelector(".shirt"); if(!sh)return;
   const r=sh.getBoundingClientRect();
-  const H=Math.min(innerHeight*0.44,400), W=H*322/447;
+  const H=Math.min(innerHeight*0.44,400), W=H*640/800;
   const dim=document.createElement("div"); dim.className="fly-dim card-dim"; document.body.appendChild(dim);
   const wrap=document.createElement("div"); wrap.className="pcard3d";
   wrap.innerHTML='<div class="pc-rays"></div><div class="pc-flip"><div class="pc-back"><img alt="" src="'+LOGO+'"></div><div class="pc-front"><img alt="" src="'+src+'"><i class="pc-shine"></i></div></div>';
   document.body.appendChild(wrap);
-  const cx=innerWidth/2, cy=innerHeight*0.36;
+  const cx=innerWidth/2, cy=innerHeight*0.33;
   gsap.set(wrap,{left:cx-W/2,top:cy-H/2,width:W,height:H});
   const flip=wrap.querySelector(".pc-flip"), rays=wrap.querySelector(".pc-rays"), shine=wrap.querySelector(".pc-shine");
   const t=gsap.timeline({onComplete:()=>{ wrap.remove(); dim.remove(); }});
