@@ -2001,7 +2001,7 @@ function openTellMe(k){
     learn(pp,ans.id,{t:"slot",k:k}); bumpGuess(pp); saveProg(pp);
     closeSheet(); renderPlay();
     const el=document.querySelector('[data-slot="'+k+'"]');
-    if(ok){ cheer(); flyIn(ans,el); setTimeout(()=>toast("יפה, בחרת נכון! "+callName(ans)+" משחק כ"+labelOf(g,k)),900); }
+    if(ok){ cheer(); flyIn(ans,el); }
     else { setTimeout(()=>toast("לא, זה "+callName(ans)+". הוא משחק כ"+labelOf(g,k)),350); }
     setTimeout(checkFinish,ok?3000:2200);
   }));
@@ -2066,7 +2066,7 @@ function evaluate(k,pid){
     const inMid=lineOf(g,k)==="mid";
     const off=!inMid&&natPos(pl)&&natPos(pl)!==labelOf(g,k);
     const msg=pick(MSG.ok)+" "+nm+" משחק כ"+labelOf(g,k)+(inMid?" · "+pick(MSG.mid):(off?" · שימי לב, העמדה הטבעית שלו היא "+natPos(pl):""));
-    setTimeout(()=>{ el.classList.add("pop"); confetti(btnRect.left+btnRect.width/2,btnRect.top+25); toast(msg); },900);
+    setTimeout(()=>{ el.classList.add("pop"); confetti(btnRect.left+btnRect.width/2,btnRect.top+25); },900);
     if(!maybeBreak(p)) setTimeout(checkFinish,3000);
     return;
   }
@@ -2139,8 +2139,8 @@ function cardReveal(pl,el,src){
   t.fromTo(dim,{opacity:0},{opacity:1,duration:.25})
    .fromTo(wrap,{scale:.25,y:120,opacity:0},{scale:1,y:0,opacity:1,duration:.45,ease:"back.out(1.6)"},"<")
    .fromTo(rays,{scale:.3,opacity:0},{scale:1,opacity:1,duration:.5,ease:"power2.out"},"-=.15")
-   .fromTo(flip,{rotationY:180},{rotationY:0,duration:.75,ease:"power3.inOut",onStart:()=>buzz("ok")},"-=.25")
-   .fromTo(shine,{xPercent:-160},{xPercent:260,duration:.7,ease:"power2.inOut"},"-=.2")
+   .fromTo(flip,{rotationY:180},{rotationY:0,duration:.38,ease:"power2.inOut",onStart:()=>buzz("ok")},"-=.45")
+   .fromTo(shine,{xPercent:-160},{xPercent:260,duration:.6,ease:"power2.inOut"},"-=.1")
    .to({}, {duration:.75})                                                  // a beat to look at the card
    .to(rays,{opacity:0,scale:.6,duration:.25})
    .to(dim,{opacity:0,duration:.35},"<")
@@ -2273,8 +2273,7 @@ function doPlace(k,pid){
     const el=document.querySelector('[data-slot="'+k+'"]'); const r=el.getBoundingClientRect();
     cheer(); flyIn(pl,el);
     const inMid=lineOf(g,k)==="mid";
-    setTimeout(()=>{ el.classList.add("pop"); confetti(r.left+r.width/2,r.top+25);
-      toast(pick(MSG.ok)+" "+nm+" משחק כ"+labelOf(g,k)+(inMid?" · "+pick(MSG.mid):"")); },900);
+    setTimeout(()=>{ el.classList.add("pop"); confetti(r.left+r.width/2,r.top+25); },900);
     setTimeout(()=>{ if(!maybeBreak(p)) checkFinish(); },3000);
     return;
   }
