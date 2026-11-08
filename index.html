@@ -1434,7 +1434,7 @@ function countdown(done,from){
   const pop=()=>{ buzz("tap");
     if(typeof gsap!=="undefined"&&!reduceMotion) gsap.fromTo(num,{scale:1.9,opacity:0,rotationX:-70},{scale:1,opacity:1,rotationX:0,duration:.45,ease:"back.out(2.4)"}); };
   if(typeof gsap!=="undefined"&&!reduceMotion){
-    gsap.from(el.querySelector(".cdn-anim"),{scale:.6,opacity:0,duration:.5,ease:"back.out(1.8)"});
+    gsap.from(el.querySelector(".cdn-anim"),{scale:.6,opacity:0,duration:.35,ease:"back.out(1.8)"});
     gsap.from(el.querySelector(".cdn-lbl"),{y:12,opacity:0,duration:.4,delay:.15});
   }
   pop();
@@ -1452,7 +1452,7 @@ function kickoff(done){
   const el=overlay('<div class="fx2 ko2"><div class="ko-stage">'+
     '<svg class="ko-lines" viewBox="0 0 240 240" fill="none"><line class="dl" pathLength="1" x1="-50" y1="120" x2="290" y2="120"/><circle class="dl" pathLength="1" cx="120" cy="120" r="78"/><circle class="ko-spot" cx="120" cy="120" r="4.5"/></svg>'+
     '<div class="ko-shadow"></div><div class="ko-ball">'+BALL_SVG+'</div><div class="ko-whistle"></div></div>'+
-    '<div class="fx-title">שריקת פתיחה</div><div class="fx-sub">המשחק התחיל. בהצלחה.</div></div>','fxo');
+    '<div class="fx-title">שריקת פתיחה</div></div>','fxo');
   const B=el.firstElementChild;
   if(HAS_G()){
     const q=s=>el.querySelectorAll(s), t=fxTl();
@@ -1460,10 +1460,10 @@ function kickoff(done){
      .from(q(".ko-spot"),{scale:0,transformOrigin:"50% 50%",duration:.3,ease:"back.out(3)"},"-=.35")
      .fromTo(q(".ko-ball"),{y:-340,rotation:-260,opacity:0},{y:0,rotation:0,opacity:1,duration:1.15,ease:"bounce.out"},"-=.55")
      .fromTo(q(".ko-shadow"),{scale:.15,opacity:0},{scale:1,opacity:1,duration:1.15,ease:"bounce.out"},"<")
-     .add(splitIn(q(".fx-title")[0])||gsap.timeline(),"-=.5")
-     .from(q(".fx-sub"),{y:12,opacity:0,duration:.4},"-=.25");
-  }
-  setTimeout(()=>fxOut(B,()=>countdown(done)),reduceMotion?3600:4500);
+     .add(splitIn(q(".fx-title")[0])||gsap.timeline(),"-=.5");
+    // hand over right after the title lands (short beat to read it), instead of a fixed 4.5s wait
+    if(reduceMotion) setTimeout(()=>fxOut(B,()=>countdown(done)),2000); else t.call(()=>fxOut(B,()=>countdown(done)),null,"+=.45");
+  } else setTimeout(()=>fxOut(B,()=>countdown(done)),2500);
 }
 function showCard(color,text,after){
   whistle(); buzz(color);
