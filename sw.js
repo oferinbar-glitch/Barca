@@ -1,5 +1,5 @@
 // Network-first: always the newest version when online; cached copy when offline.
-const CACHE = "lineup-cd6aeff6";
+const CACHE = "lineup-a75a189c";
 const CORE = [
   "./",
   "index.html",
@@ -28,7 +28,6 @@ const CORE = [
   "assets/gsap.min.js",
   "assets/img/0ed1f5e3f7.webp",
   "assets/img/128393a6a8.webp",
-  "assets/img/209bc4e22e.png",
   "assets/img/228f427786.webp",
   "assets/img/23745953cb.webp",
   "assets/img/35ff4fa447.webp",
@@ -58,7 +57,14 @@ const CORE = [
   "assets/lottie.min.js",
   "assets/lottie/goal.json",
   "assets/lottie/trophy.json",
-  "assets/lottie/whistle.json"
+  "assets/lottie/whistle.json",
+  "assets/teams/S.png",
+  "assets/teams/atletico.png",
+  "assets/teams/barcelona.png",
+  "assets/teams/s-home.png",
+  "assets/teams/s-op.png",
+  "assets/teams/s-op2.png",
+  "assets/teams/s-play.png"
 ];
 self.addEventListener("install", e => { self.skipWaiting(); e.waitUntil(caches.open(CACHE).then(c => Promise.all(CORE.map(u => c.add(u).catch(() => {}))))); });
 self.addEventListener("activate", e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())));

@@ -773,6 +773,26 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 
 /* ===== pass 13: competition emblem ===== */
 .tk-emblem{display:block;height:44px;width:auto;margin:0 auto 10px;opacity:.95;filter:drop-shadow(0 4px 10px rgba(0,0,0,.35))}
+
+/* ===== pass 14: team crests ===== */
+.tk-emblem{height:34px;margin-bottom:8px}
+.tk-match{display:flex;align-items:center;justify-content:center;gap:14px;margin:12px 0 2px}
+.tk-crest{height:52px;width:auto;filter:drop-shadow(0 6px 12px rgba(0,0,0,.45))}
+.tk-vs{font-family:var(--f-display);font-weight:700;font-size:22px;color:var(--muted);padding-top:3px}
+.ticket .opp{margin:6px 0 6px;font-size:36px}
+#playTitle{display:none}
+.match-bug{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;max-width:470px;width:calc(100% - 28px);margin:2px auto 8px;
+  padding:8px 14px;border-radius:var(--r-l);background:linear-gradient(90deg,rgba(29,87,184,.28),rgba(8,16,44,.6) 50%,rgba(165,0,68,.28));
+  border:1px solid rgba(255,255,255,.12);box-shadow:0 10px 26px rgba(0,0,0,.3)}
+.match-bug:empty{display:none}
+.mb-side{display:flex;align-items:center;gap:9px;min-width:0}
+.mb-side.opp{flex-direction:row-reverse}
+.mb-side img{height:38px;width:auto;flex:none;filter:drop-shadow(0 3px 6px rgba(0,0,0,.45))}
+.mb-side b{font-family:var(--f-display);font-weight:700;font-size:24px;line-height:1;padding-top:3px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mb-vs{font-family:var(--f-display);font-weight:700;font-size:18px;color:var(--gold);padding-top:3px}
+.comp-em{height:30px;width:auto;margin-bottom:6px}
+.opp-hint{display:flex;align-items:center;gap:8px;min-height:26px;margin-top:6px;font-size:12.5px;color:var(--ink-soft)}
+.opp-hint img{height:24px;width:auto}
 </style>
 </head>
 <body>
@@ -780,7 +800,7 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 <!-- HOME -->
 <section id="home" class="screen active">
   <div class="home-inner">
-    <div class="crest-wrap"><img class="crest" alt="סמל ברצלונה" src="assets/img/209bc4e22e.png"></div>
+    <div class="crest-wrap"><img class="crest" alt="סמל ברצלונה" src="assets/teams/barcelona.png"></div>
     <h1 class="home-title">מי עולה על הדשא?</h1>
     <div class="ticket" id="ticket">
       <div class="ticket-body" id="ticketBody"></div>
@@ -800,6 +820,7 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
     <div class="gcount" id="gcount"><b>0</b><small>ניחושים</small></div>
     <button class="icon-btn mute" id="muteBtn" aria-label="השתקת מוזיקה"><span class="mi"></span><small>השתק</small></button>
   </div>
+  <div class="match-bug" id="matchBug"></div>
   <div class="staff">
     <div class="st-row"><img alt="" src="assets/img/8437ba2295.webp"><div><small>מאמן</small><b>האנזי פליק</b></div></div>
     <div class="st-row" id="asstRow" hidden><img alt="" id="asstImg"><div><small>עוזרת מאמן</small><b id="asstName"></b></div></div>
@@ -1217,6 +1238,20 @@ function fullTime(){
 }
 
 /* ===================== HOME ===================== */
+/* Opponent crests. To add a team: put a PNG in assets/teams/ and list the names it may be typed as. */
+const TEAM_CRESTS=[
+  {file:"atletico", names:["אתלטיקו מדריד","אתלטיקו","אתלטיקו דה מדריד","אתלטי","atletico madrid","atletico de madrid","atletico","atleti"]},
+];
+function normTeam(s){ return (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[֑-ׇ]/g,"")
+  .replace(/["'`׳״.\-_()]/g," ").replace(/\b(fc|cf|cd|sd|ud|rcd|club|de futbol)\b/g," ").replace(/\s+/g," ").trim(); }
+function teamCrest(name){
+  const n=normTeam(name); if(!n) return null;
+  let best=null, bestLen=0;
+  TEAM_CRESTS.forEach(t=>t.names.forEach(a=>{ const al=normTeam(a);
+    const hit=n===al||(al.indexOf(" ")>0&&(" "+n+" ").indexOf(" "+al+" ")>=0);   // one-word nicknames must be the whole name (avoids "אתלטיקו בילבאו")
+    if(hit&&al.length>bestLen){ best=t; bestLen=al.length; } }));
+  return best?"assets/teams/"+best.file+".png":null;
+}
 const COMP_EMBLEM={laliga:"assets/comp/laliga.png",ucl:"assets/comp/ucl.png",cup:"assets/comp/cup.png"};
 function matchDate(s){
   const m=/^(\d{4})-(\d{2})-(\d{2})/.exec(s||""); if(!m) return s||"";
@@ -1234,7 +1269,9 @@ function renderHome(){
     const em=COMP_EMBLEM[g.comp];
     body.innerHTML=(em?'<img class="tk-emblem" alt="" src="'+em+'" onerror="this.remove()">':'')+
       '<div class="tk-top"><span>המשחק הבא</span>'+(c?'<span>'+esc(c.name)+'</span>':'')+'</div>'+
-      '<div class="opp">נגד '+esc(g.opp||"היריבה")+'</div><div class="when">'+esc(matchDate(g.date))+'</div>';
+      '<div class="tk-match"><img class="tk-crest" alt="" src="'+LOGO+'"><span class="tk-vs">נגד</span>'+
+      (teamCrest(g.opp)?'<img class="tk-crest" alt="" src="'+teamCrest(g.opp)+'" onerror="this.remove()">':'')+'</div>'+
+      '<div class="opp">'+esc(g.opp||"היריבה")+'</div><div class="when">'+esc(matchDate(g.date))+'</div>';
     $("#ticketComp").innerHTML='';
     btn.disabled=false;
     const started=prog&&prog.gameId===g.id&&Object.values(prog.slots||{}).some(s=>s.done||s.tries.length);
@@ -1259,7 +1296,7 @@ const NOTES={
  p24:"בדרך כלל הוא קיצוני שמאלי, אבל מי יודע, פליק הזיה ולפעמים ממציא עמדות. זה החריג."
 };
 const FORGETFUL=["p7","p19"];
-const LOGO='assets/img/209bc4e22e.png';
+const LOGO='assets/teams/barcelona.png';
 const ASST_K="fcb_asst_v1";
 const SFX={"whistle": "assets/audio/whistle.mp3", "crowd": "assets/audio/crowd.mp3", "bg": "assets/audio/bg.mp3", "var": "assets/audio/var.mp3"};
 const AU={};
@@ -1493,6 +1530,9 @@ function renderPlay(){
   { const s=jget(LD_K,null); if(!s||s.id!==g.id){ Object.keys(LD_OPEN).forEach(x=>delete LD_OPEN[x]); saveLd(); } }
   const p=getProg(g); saveProg(p);
   $("#playTitle").textContent="ברצלונה נגד "+(g.opp||"היריבה");
+  { const oc=teamCrest(g.opp), mb=$("#matchBug");
+    if(mb) mb.innerHTML='<div class="mb-side"><img alt="" src="'+LOGO+'"><b>ברצלונה</b></div><span class="mb-vs">נגד</span>'+
+      '<div class="mb-side opp">'+(oc?'<img alt="" src="'+oc+'" onerror="this.remove()">':'')+'<b>'+esc(g.opp||"היריבה")+'</b></div>'; }
   const slots=slotsOf(g.formation); let done=0;
   let h=pitchLines();
   slots.forEach(s=>{
@@ -2178,9 +2218,9 @@ function renderLineupTab(){
   const taken=new Set(Object.values(d.lineup).filter(Boolean));
   let h='';
   h+=g?'<div class="status">משחק פעיל: נגד '+esc(g.opp||"היריבה")+'. הפעלה מחדש או סיום יאפסו את הניחושים.</div>':'<div class="status off">אין משחק פעיל כרגע.</div>';
-  h+='<div class="card"><h3>המשחק</h3><label><span class="lbl-s">יריבה</span><input class="inp" id="opp" value="'+esc(d.opp||"")+'" placeholder="למשל ריאל מדריד"></label>'+
+  h+='<div class="card"><h3>המשחק</h3><label><span class="lbl-s">יריבה</span><input class="inp" id="opp" value="'+esc(d.opp||"")+'" placeholder="למשל ריאל מדריד"></label><div class="opp-hint" id="oppHint"></div>'+
      '<span class="lbl-s" style="margin-top:12px;display:block">מסגרת</span><div class="comp-pick">'+
-     Object.entries(COMPS).map(([ck,c])=>'<button class="comp-opt'+(d.comp===ck?" on":"")+'" data-c="'+ck+'">'+c.svg+'<span>'+esc(c.name)+'</span></button>').join("")+
+     Object.entries(COMPS).map(([ck,c])=>'<button class="comp-opt'+(d.comp===ck?" on":"")+'" data-c="'+ck+'">'+(COMP_EMBLEM[ck]?'<img class="comp-em" alt="" src="'+COMP_EMBLEM[ck]+'">':c.svg)+'<span>'+esc(c.name)+'</span></button>').join("")+
      '</div><p class="lbl-s" style="margin:10px 0 0">התאריך שיישמר הוא '+esc(fmtDay(todayStr()))+'.</p></div>';
 
   const filled=slots.filter(s=>d.lineup[s.k]).length;
@@ -2198,7 +2238,9 @@ function renderLineupTab(){
   h+='<div class="op-foot"><button class="btn gold" id="launch" style="flex:1;font-size:18px;padding:14px">הפעל משחק</button>'+(g?'<button class="btn danger" id="endGame">סיים משחק</button>':'')+'</div><div class="err" id="opErr"></div>';
   $("#opBody").innerHTML=h;
 
-  $("#opp").oninput=e=>{d.opp=e.target.value;saveDraft(d)};
+  const oppHint=()=>{ const el=$("#oppHint"); if(!el)return; const c=teamCrest(d.opp);
+    el.innerHTML=!d.opp.trim()?'':c?'<img alt="" src="'+c+'"><span>הסמל נמצא</span>':'<span>אין עדיין סמל לקבוצה הזו. המשחק יוצג בלי סמל.</span>'; };
+  $("#opp").oninput=e=>{d.opp=e.target.value;saveDraft(d);oppHint();}; oppHint();
   document.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{d.comp=b.dataset.c;saveDraft(d);renderLineupTab()});
   document.querySelectorAll("[data-os]").forEach(b=>b.onclick=()=>opPicker(b.dataset.os));
   document.querySelectorAll("[data-b]").forEach(b=>b.onclick=()=>{const id=b.dataset.b;d.bench=d.bench.includes(id)?d.bench.filter(x=>x!==id):[...d.bench,id];saveDraft(d);b.classList.toggle("on");
