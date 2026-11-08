@@ -829,6 +829,39 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 .pc-back::before{content:"";position:absolute;inset:3.2% 4%;background:repeating-linear-gradient(90deg,#1d4fa8 0 14%,#8a0a3d 14% 28%);
   -webkit-mask:url("assets/cards/mask.png") center/100% 100%;mask:url("assets/cards/mask.png") center/100% 100%}
 .pc-back img{position:relative;width:50%;filter:drop-shadow(0 8px 16px rgba(0,0,0,.5))}
+
+/* ===== pass 23 ===== */
+/* place-him window */
+.ovl.poo{background:radial-gradient(120% 80% at 50% 40%,rgba(19,38,89,.88),rgba(4,9,26,.94))}
+.po{position:relative;width:100%;max-width:360px;text-align:center;padding:26px 22px 22px;border-radius:22px;
+  background:linear-gradient(165deg,#16285f 0%,#0d1a47 60%,#2a0c2c 100%);
+  box-shadow:0 30px 70px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.12)}
+.po::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;border-radius:22px 22px 0 0;
+  background:repeating-linear-gradient(90deg,#1d57b8 0 12.5%,#a50044 12.5% 25%)}
+.po-top{display:flex;justify-content:center;margin-bottom:14px}
+.po-badge{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:999px;font-size:12.5px;font-weight:700;letter-spacing:.3px;
+  color:#0c1a45;background:#7fe0a8}
+.po-badge::before{content:"";width:8px;height:8px;border-radius:50%;background:#0c6b3a}
+.po-face{position:relative;width:118px;height:118px;margin:0 auto 14px}
+.po-face img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block;box-shadow:0 0 0 4px var(--gold),0 14px 30px rgba(0,0,0,.5)}
+.po-ring{position:absolute;inset:0;border-radius:50%;border:3px solid var(--gold)}
+.po-head{font-family:var(--f-display);font-weight:700;font-size:32px;line-height:1;color:var(--chalk)}
+.po-txt{margin:10px 0 20px;font-size:15.5px;line-height:1.55;color:#c9d1ea}
+.ovl .po-txt b{display:inline;font:inherit;font-weight:700;margin:0;color:var(--chalk)}
+.po-btns{display:flex;flex-direction:column;gap:22px}
+.po-btns .btn-main{width:100%;margin:0}
+.po-btns .btn{width:100%;padding:13px;font-size:15px;color:var(--chalk);border-color:rgba(255,255,255,.22)}
+
+/* hints: distinct gold panel */
+.ladder{box-shadow:inset 0 0 0 1.5px rgba(237,187,0,.6);background:rgba(237,187,0,.05)}
+.ld-head{background:linear-gradient(90deg,rgba(237,187,0,.26),rgba(237,187,0,.08))!important;align-items:center}
+:root[data-theme="dark"] .ladder .ld-head b,.ladder .ld-head b{color:var(--gold)}
+.ld-head b::before{content:"";display:inline-block;width:18px;height:18px;margin-left:8px;vertical-align:-2px;background:var(--gold);
+  -webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 21h6v-1.5H9V21zm3-19a7 7 0 0 0-4 12.74V17h8v-2.26A7 7 0 0 0 12 2z'/%3E%3C/svg%3E") center/contain no-repeat;
+  mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M9 21h6v-1.5H9V21zm3-19a7 7 0 0 0-4 12.74V17h8v-2.26A7 7 0 0 0 12 2z'/%3E%3C/svg%3E") center/contain no-repeat}
+.ld-head small{color:#e8d9a6}
+.ld-head .chev{border-color:var(--gold)!important}
+.ladder.open .ld-list{border-top:1px solid rgba(237,187,0,.25)}
 </style>
 </head>
 <body>
@@ -893,7 +926,6 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 <h2>מה התשובות אומרות</h2>
 <ul>
 <li><b>בול!</b> השחקן בעמדה המדויקת. התמונה שלו קופצת למרכז המסך ועפה למקום שלו במגרש.</li>
-<li><b>GOAL!</b> אם פיצחת עמדה בניסיון הראשון, בלי טעות ובלי רמז, מקבלים חגיגה מיוחדת.</li>
 <li><b>קרוב מאוד.</b> השחקן משחק באותו קו (הגנה, קישור או התקפה), אבל בעמדה אחרת בו.</li>
 <li><b>הוא על הדשא, אבל לא פה.</b> הוא פותח בקו אחר לגמרי, והמערכת תגיד לך באיזה.</li>
 <li><b>על הספסל.</b> הוא בסגל, אבל לא פותח.</li>
@@ -1108,7 +1140,7 @@ function goBackOne(){
   const kb=document.getElementById("kb"), o=document.getElementById("ovl");
   const click=sel=>{ const b=document.querySelector(sel); if(b){ b.click(); return true; } return false; };
   if(kb&&kb.classList.contains("open")){ closeKeyboard(); return; }
-  if(o&&o.classList.contains("show")){ if(click("#pwAgain")||click("#skipBrk")) return; return; }   // timed animations finish by themselves
+  if(o&&o.classList.contains("show")){ if(click("#poStay")||click("#pwAgain")||click("#skipBrk")) return; return; }   // timed animations finish by themselves
   if($("#finish").classList.contains("show")){ if(click("#rvQuit")||click("#finishBtn")) return; $("#finish").classList.remove("show"); show("home"); return; }
   if($("#sheet").classList.contains("open")){ if(click("#sheet [data-back]")) return; closeSheet(); return; }
   const pb=$("#placeBar"); if(pb&&!pb.hidden&&click("#pbCancel")) return;
@@ -1150,6 +1182,41 @@ function flyName(nm,from,to,onLand){
    .from(fl,{scale:.6,opacity:0,duration:.18})
    .to(fl,{x:to.left+to.width/2-w/2,y:to.top+to.height/2-hh/2,scale:.85,duration:.55,ease:"power2.inOut"},"+=.12")
    .add(()=>{ if(onLand) onLand(); }).to(fl,{opacity:0,duration:.08});
+}
+let PO_T=null;
+function queuePlaceOffer(k,pid,r,head){
+  clearTimeout(PO_T);
+  const started=Date.now();
+  const tryShow=()=>{
+    if(!$("#play").classList.contains("active")) return;
+    if(busyScreen()&&Date.now()-started<20000){ PO_T=setTimeout(tryShow,300); return; }   // after cards / VAR
+    placeOffer(k,pid,r,head);
+  };
+  PO_T=setTimeout(tryShow,reduceMotion?200:1150);   // let the name land in the notebook first
+}
+function placeOffer(k,pid,r,head){
+  const g=getGame(); const pl=byId(pid); if(!g||!pl) return;
+  const ph=photoOf(pid); const nm=callName(pl);
+  const same=r==="r2";
+  const el=overlay('<div class="po">'+
+    '<div class="po-top"><span class="po-badge">'+(same?'באותו קו':'על הדשא')+'</span></div>'+
+    '<div class="po-face">'+(ph?'<img alt="" src="'+ph+'">':'')+'<i class="po-ring"></i></div>'+
+    '<div class="po-head">'+head+'</div>'+
+    '<p class="po-txt"><b>'+esc(nm)+'</b> פותח היום, רק לא כ'+esc(labelOf(g,k))+'.<br>רוצה למקם אותו במקום הנכון שלו?</p>'+
+    '<div class="po-btns"><button class="btn-main po-go" id="poGo">למקם אותו</button><button class="btn ghost" id="poStay">המשך ניחושים אחרים</button></div>'+
+    '</div>','fxo poo');
+  if(typeof gsap!=="undefined"&&!reduceMotion){
+    const q=s=>el.querySelectorAll(s);
+    gsap.timeline()
+      .from(q(".po"),{y:60,opacity:0,scale:.92,duration:.42,ease:"back.out(1.6)"})
+      .from(q(".po-face"),{scale:.3,rotation:-20,duration:.45,ease:"back.out(2.4)"},"-=.25")
+      .fromTo(q(".po-ring"),{scale:.8,opacity:.9},{scale:1.6,opacity:0,duration:.7,ease:"power2.out"},"-=.3")
+      .from(q(".po-badge,.po-head,.po-txt,.po-btns > *"),{y:12,opacity:0,duration:.3,stagger:.06},"-=.55");
+  }
+  buzz("flag");
+  $("#poGo").onclick=()=>{ hideOverlay(); closeKeyboard(); closeSheet(); PLACE={pid:pid,from:k}; renderPlay(); };
+  $("#poStay").onclick=()=>{ const box=el.firstElementChild;
+    if(typeof gsap!=="undefined"&&!reduceMotion&&box) gsap.to(box,{y:40,opacity:0,duration:.22,ease:"power1.in",onComplete:hideOverlay}); else hideOverlay(); };
 }
 function wrongFx(nm){
   buzz("wrong"); shakeField();
@@ -1542,6 +1609,7 @@ function kickoff(done){
     if(reduceMotion) setTimeout(()=>fxOut(B,()=>countdown(done)),2000); else t.call(()=>fxOut(B,()=>countdown(done)),null,"+=.45");
   } else setTimeout(()=>fxOut(B,()=>countdown(done)),2500);
 }
+let FX_HOLD=0;
 function showCard(color,text,after){
   whistle(); buzz(color);
   if(color==="red") setTimeout(()=>{ duck(true); sfx('var',1); },1200);
@@ -1557,7 +1625,8 @@ function showCard(color,text,after){
      .from(q(".fx-sub"),{y:16,opacity:0,duration:.45},"-=.55");
     if(!reduceMotion) gsap.to(q(".cd-burst"),{rotation:360,duration:16,ease:"none",repeat:-1});
   }
-  setTimeout(()=>fxOut(B,()=>{ if(after)setTimeout(after,380); }),color==="red"?3400:4200);
+  if(after) FX_HOLD++;
+  setTimeout(()=>fxOut(B,()=>{ if(after)setTimeout(()=>{ FX_HOLD=Math.max(0,FX_HOLD-1); after(); },380); }),color==="red"?3400:4200);
 }
 function waterBreak(){
   let n=10; const brkMsg=pick(BREAK);
@@ -2028,7 +2097,7 @@ function doCheck(k){
 function maybeBreak(p){ return false; }   // the break is now driven by breakWatch()
 function busyScreen(){
   const o=document.getElementById("ovl");
-  return (o&&o.classList.contains("show"))||document.querySelector(".fly2,.goal-fx,.chip-fly")||$("#finish").classList.contains("show");
+  return FX_HOLD>0||(o&&o.classList.contains("show"))||document.querySelector(".fly2,.goal-fx,.chip-fly")||$("#finish").classList.contains("show");
 }
 let BRK_IDLE=0;
 setInterval(function breakWatch(){
@@ -2063,7 +2132,7 @@ function evaluate(k,pid){
     closeSheet(); renderPlay();
     const el=document.querySelector('[data-slot="'+k+'"]');
     const btnRect=el.getBoundingClientRect();
-    cheer(); flyIn(pl,el); if(!st.tries.length&&!hintCount(st)) setTimeout(goalFx,250);
+    cheer(); flyIn(pl,el);
     const inMid=lineOf(g,k)==="mid";
     const off=!inMid&&natPos(pl)&&natPos(pl)!==labelOf(g,k);
     const msg=pick(MSG.ok)+" "+nm+" משחק כ"+labelOf(g,k)+(inMid?" · "+pick(MSG.mid):(off?" · שימי לב, העמדה הטבעית שלו היא "+natPos(pl):""));
@@ -2110,7 +2179,7 @@ function evaluate(k,pid){
     else if(n===2&&!p.offered[pid]){offer=1;p.offered[pid]=1;} }
   saveProg(p);
   const html='<div class="result '+r+'"><b>'+head+'</b>'+(body?body:'')+'<div class="note">נרשם בפנקס הגילויים.</div>'+
-    (inLineup?'<div class="offer place-offer"><b>רוצה למקם אותו?</b>'+esc(nm)+' כן משחק היום, רק לא כאן. להמשיך לנחש בעמדה הזו, או לקפוץ ולמקם אותו במקום הנכון שלו?<div class="row"><button class="btn sm" data-place="'+pid+'">למקם אותו</button><button class="btn ghost sm" data-place="">להמשיך כאן</button></div></div>':'')+
+    ''+
     (offer?'<div class="offer"><b>רוצה רמז?</b>'+(offer===2
        ?'ניסית את '+esc(nm)+' כבר שלוש פעמים. שנגלה לך באיזה קו הוא משחק היום?'
        :'אני רואה שניחשת את '+esc(nm)+' כבר פעמיים. הוא אכן משחק היום, רק לא בעמדות שניסית. שנזכיר לך מה העמדה הטבעית שלו?')+
@@ -2118,6 +2187,7 @@ function evaluate(k,pid){
   bumpGuess(p); saveProg(p);
   const n=st.tries.length;
   renderPlay(); currentSlot=k; renderSlotSheet(k,html,"",false); wrongFx(callName(byId(pid)));
+  if(inLineup) queuePlaceOffer(k,pid,r,head);
   if(n===2&&!st.yc){ st.yc=true; saveProg(p); setTimeout(()=>showCard("yellow",pick(YELLOW),()=>maybeBreak(p)),500); }
   else if(n===3&&!st.rc){ st.rc=true; saveProg(p); setTimeout(()=>showCard("red",pick(RED),()=>varCheck()),500); }
   else maybeBreak(p);
