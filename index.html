@@ -879,7 +879,7 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 @media (prefers-reduced-motion: reduce){.xi-p.clean .xi-f,.xi-key i{animation:none}}
 
 /* ===== pass 25: floodlit pitch screen ===== */
-#play{background:radial-gradient(120% 42% at 50% -6%,#2a4fa6 0%,rgba(42,79,166,0) 62%),linear-gradient(#0d1d52,#060d29 72%);display:flex;flex-direction:column}
+#play{background:radial-gradient(120% 42% at 50% -6%,#2a4fa6 0%,rgba(42,79,166,0) 62%),linear-gradient(#0d1d52,#060d29 72%)}
 #play .topbar{gap:10px;padding-bottom:6px}
 #play .icon-btn{border-radius:50%;width:42px;height:42px}
 #play .icon-btn.mute{border-radius:50%;width:42px;padding:0}
@@ -937,6 +937,32 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 .mb-side b{font-size:clamp(18px,5.6vw,23px)}
 .mb-side{padding:0 clamp(8px,2.6vw,12px)}
 @media (max-width:370px){.pitch .slot .lbl{font-size:11px;padding:2px 7px}.pitch .slot .nm{font-size:12px;padding:2px 7px}}
+
+/* ===== pass 26 ===== */
+/* operator status lists */
+.st-help{margin:0 0 10px;font-size:14px;color:var(--ink-soft)}
+.st-n{font-weight:400;font-size:14px;color:var(--ink-soft)}
+.st-none{font-size:14px;color:var(--ink-soft)}
+.chips.inj .chip.on{background:#d9681e;border-color:#d9681e;color:#fff}
+.chips.out .chip.on{background:#d3dcec;border-color:#d3dcec;color:#0c1a45}
+/* status window: bench / injured / not in squad */
+.ovl.stwo{background:radial-gradient(120% 80% at 50% 40%,rgba(19,38,89,.86),rgba(4,9,26,.93))}
+.stw{--acc:var(--gold);position:relative;width:100%;max-width:340px;text-align:center;padding:24px 22px 22px;border-radius:22px;overflow:hidden;cursor:pointer;
+  background:linear-gradient(165deg,#16285f 0%,#0d1a47 60%,#2a0c2c 100%);box-shadow:0 30px 70px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.12)}
+.stw::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:repeating-linear-gradient(90deg,#1d57b8 0 12.5%,#a50044 12.5% 25%)}
+.stw-inj{--acc:#ff7a3d}
+.stw-out{--acc:#9fb4dc}
+.stw-anim{width:170px;height:170px;margin:4px auto 14px;border-radius:50%;overflow:hidden;display:grid;place-items:center;
+  background:#fff;box-shadow:0 0 0 4px var(--acc),0 16px 34px rgba(0,0,0,.45)}
+.stw-anim svg{width:84%!important;height:84%!important}
+.stw-who{display:inline-flex;align-items:center;gap:8px;padding:3px 13px 3px 3px;border-radius:999px;background:rgba(255,255,255,.08);font-size:13.5px;font-weight:600;color:var(--chalk)}
+.stw-who img{width:28px;height:28px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px var(--blau)}
+.stw-who:not(:has(img)){padding:4px 13px}
+.stw-title{font-family:var(--f-display);font-weight:700;font-size:44px;line-height:1;margin-top:10px;color:var(--acc)}
+.stw-txt{margin:8px 0 18px;font-size:15.5px;line-height:1.5;color:#c9d1ea}
+.ovl .stw-txt b{display:inline;font:inherit;font-weight:700;margin:0;color:var(--chalk)}
+.stw-ok{width:100%;padding:12px;font-size:15px;color:var(--chalk);border-color:rgba(255,255,255,.22)}
+.stw-bar{position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--acc);transform-origin:right center}
 </style>
 </head>
 <body>
@@ -1004,15 +1030,17 @@ select{background:#0e1842;color:var(--ink);border:1.5px solid var(--line);border
 <li><b>קרוב מאוד.</b> השחקן משחק באותו קו (הגנה, קישור או התקפה), אבל בעמדה אחרת בו.</li>
 <li><b>הוא על הדשא, אבל לא פה.</b> הוא פותח בקו אחר לגמרי, והמערכת תגיד לך באיזה.</li>
 <li><b>על הספסל.</b> הוא בסגל, אבל לא פותח.</li>
-<li><b>לא בסגל היום.</b> פצוע, לא כשיר, או פשוט לא נבחר.</li>
+<li><b>פצוע.</b> הוא בסגל הרחב, אבל פצוע ולא ישחק היום.</li>
+<li><b>לא בסגל היום.</b> לא נבחר למשחק הזה.</li>
 </ul>
+<p>על הספסל, פצוע או לא בסגל: בכל אחד מהשלושה קופץ חלון קטן עם אנימציה משלו, ונסגר לבד אחרי כמה שניות (או בלחיצה על "הבנתי").</p>
 <p>הטלפון גם רוטט: רטט קצר בניחוש נכון, רטט כפול בטעות.</p>
 
 <h2>הקישור עניין בפני עצמו</h2>
 <p>פליק מזיז את שלושת הקשרים כל הזמן, ולפעמים אין לזה שם מדויק. לכן בקישור צריך רק לסדר נכון את השלושה בין ימין, מרכז ושמאל. אם צדקת בשחקן אבל לא במשבצת, פשוט תסדרי מחדש.</p>
 
 <h2>פנקס הגילויים</h2>
-<p>כל ניחוש לא נכון נרשם בפנקס, והשם עף אליו ממש מול העיניים: קודם מי שגילית שהוא בהרכב אבל בעמדה אחרת, אחריו מי שעל הספסל, ובסוף מי שלא בסגל. שחקנים שכבר ניחשת נכון לא נרשמים שם, כי אותם ממילא תזכרי.</p>
+<p>כל ניחוש לא נכון נרשם בפנקס, והשם עף אליו ממש מול העיניים: קודם מי שגילית שהוא בהרכב אבל בעמדה אחרת, אחריו מי שעל הספסל ומי שפצוע, ובסוף מי שלא בסגל. שחקנים שכבר ניחשת נכון לא נרשמים שם, כי אותם ממילא תזכרי.</p>
 <p>הפנקס פתוח תמיד, בתוך כל עמדה. ואם תנסי שוב שחקן שכבר פסלת, המערכת תעצור אותך ותזכיר מה כבר ידוע עליו.</p>
 
 <h2>למקם שחקן במקום אחר</h2>
@@ -1215,7 +1243,7 @@ function goBackOne(){
   const kb=document.getElementById("kb"), o=document.getElementById("ovl");
   const click=sel=>{ const b=document.querySelector(sel); if(b){ b.click(); return true; } return false; };
   if(kb&&kb.classList.contains("open")){ closeKeyboard(); return; }
-  if(o&&o.classList.contains("show")){ if(click("#poStay")||click("#pwAgain")||click("#skipBrk")) return; return; }   // timed animations finish by themselves
+  if(o&&o.classList.contains("show")){ if(click("#stwOk")||click("#poStay")||click("#pwAgain")||click("#skipBrk")) return; return; }   // timed animations finish by themselves
   if($("#finish").classList.contains("show")){ if(click("#rvQuit")||click("#finishBtn")) return; $("#finish").classList.remove("show"); show("home"); return; }
   if($("#sheet").classList.contains("open")){ if(click("#sheet [data-back]")) return; closeSheet(); return; }
   const pb=$("#placeBar"); if(pb&&!pb.hidden&&click("#pbCancel")) return;
@@ -1293,6 +1321,50 @@ function placeOffer(k,pid,r,head){
   $("#poStay").onclick=()=>{ const box=el.firstElementChild;
     if(typeof gsap!=="undefined"&&!reduceMotion&&box) gsap.to(box,{y:40,opacity:0,duration:.22,ease:"power1.in",onComplete:hideOverlay}); else hideOverlay(); };
 }
+/* Bench / injured / not in squad: a short window with its own animation. Closes by itself. */
+const ST_INFO={
+  bench:{lot:"bench",title:"על הספסל",txt:["{n} יושב על הספסל ומחכה לתורו. אולי ייכנס בהמשך.","{n} מחכה בסבלנות על הספסל. אולי פליק יכניס אותו במחצית השנייה.","{n} לא פותח, אבל השעון רץ. אולי ייכנס בהמשך."]},
+  inj:{lot:"injury",title:"פצוע",txt:["{n} פצוע וצריך לנוח.","{n} בטיפולים. עכשיו הוא צריך לנוח ולחזור חזק.","{n} פצוע, והצוות הרפואי שומר עליו. היום הוא נח."]},
+  out:{lot:"notsquad",title:"לא בסגל",txt:["{n} בכלל לא בסגל היום. הוא נח בבית.","{n} לא ברשימה של היום. אפשר לתת לו לישון.","{n} לא בסגל. הוא בבית, מתחת לשמיכה."]}
+};
+let ST_T=null, ST_PEND=null;
+function queueStatus(kind,pid,after){
+  clearTimeout(ST_T);
+  if(ST_PEND){ const prev=ST_PEND; ST_PEND=null; prev(); }   // a quicker next guess: the earlier window is skipped, its card still comes
+  const started=Date.now(); let done=false;
+  const fin=()=>{ if(done)return; done=true; if(after) after(); };
+  ST_PEND=fin;
+  const tryShow=()=>{
+    ST_PEND=null;
+    if(!$("#play").classList.contains("active")){ fin(); return; }
+    if(busyScreen()&&Date.now()-started<15000){ ST_PEND=fin; ST_T=setTimeout(tryShow,250); return; }
+    statusWin(kind,pid,fin);
+  };
+  ST_T=setTimeout(tryShow,reduceMotion?150:1100);   // the name lands in the notebook first
+}
+function statusWin(kind,pid,fin){
+  const I=ST_INFO[kind], pl=byId(pid); if(!I||!pl){ fin(); return; }
+  const nm=callName(pl), ph=photoOf(pid);
+  const el=overlay('<div class="stw stw-'+kind+'" role="dialog" aria-label="'+I.title+'">'+
+    '<div class="stw-anim"></div>'+
+    '<div class="stw-who">'+(ph?'<img alt="" src="'+ph+'">':'')+'<span>'+esc(nm)+'</span></div>'+
+    '<div class="stw-title">'+I.title+'</div>'+
+    '<p class="stw-txt">'+pick(I.txt).replace("{n}",'<b>'+esc(nm)+'</b>')+'</p>'+
+    '<button class="btn ghost stw-ok" id="stwOk">הבנתי</button><i class="stw-bar"></i></div>','fxo stwo');
+  const box=el.firstElementChild; let closed=false; const DUR=3800;
+  const close=()=>{ if(closed)return; closed=true; clearTimeout(t);
+    const end=()=>{ if(box.isConnected) hideOverlay(); setTimeout(fin,150); };
+    if(HAS_G()&&!reduceMotion&&box.isConnected) gsap.to(box,{y:30,opacity:0,duration:.22,ease:"power1.in",onComplete:end}); else end(); };
+  const t=setTimeout(close,DUR);
+  box.onclick=close;
+  playLottie(el.querySelector(".stw-anim"),I.lot,{loop:true});
+  if(HAS_G()&&!reduceMotion){
+    gsap.from(box,{y:50,opacity:0,scale:.94,duration:.4,ease:"back.out(1.6)"});
+    gsap.from(el.querySelector(".stw-anim"),{scale:.4,duration:.5,ease:"back.out(2.2)",delay:.1});
+    gsap.fromTo(el.querySelector(".stw-bar"),{scaleX:1},{scaleX:0,duration:DUR/1000,ease:"none"});
+  }
+  buzz("flag");
+}
 function wrongFx(nm){
   buzz("wrong"); shakeField();
   if(reduceMotion||typeof gsap==="undefined") return;
@@ -1351,7 +1423,7 @@ function playLottie(el,name,opts){
     return a;
   }).catch(()=>{ LOT[name]=null; return null; });
 }
-setTimeout(()=>{ lottieLib().then(()=>["whistle","trophy","goal","loader"].forEach(n=>lottieData(n).catch(()=>{ LOT[n]=null; }))).catch(()=>{}); },2500);
+setTimeout(()=>{ lottieLib().then(()=>["whistle","trophy","goal","loader","bench","injury","notsquad"].forEach(n=>lottieData(n).catch(()=>{ LOT[n]=null; }))).catch(()=>{}); },2500);
 function goalFx(){
   if(reduceMotion) return;
   const d=document.createElement("div"); d.className="goal-fx"; document.body.appendChild(d);
@@ -1550,7 +1622,9 @@ const MSG={
  r3:["את צודקת, הוא בהרכב","הוא על הדשא, אבל לא פה","שחקן נכון, אזור לא נכון","פליק שם אותו במקום אחר","הוא פותח, רק לא כאן","חצי ניצחון, הוא כן ב-11","זיהית נכון שהוא משחק","הוא על המגרש, בחלק אחר ממנו","נכון שהוא פותח, לא נכון איפה","קרוב ללב, רחוק מהעמדה"],
  midwrong:["הוא בשלישיית הקישור, רק לא כאן. נסי לשבץ אותו אחרת","נכון שהוא בקישור, אבל במשבצת אחרת. תסדרי מחדש","הוא אחד משלושת הקשרים, רק לא במקום הזה","בקישור הוא כן, בעמדה הזו לא. נסי שיבוץ אחר","הוא שם בקישור, פשוט לא בדיוק כאן"],
  r4:["בסגל, אבל לא פותח היום.","על הספסל היום.","בסגל, אבל לא ב-11 הפותחים.","מחכה על הספסל.","בסגל הרחב, לא בהרכב.","לא פותח, הוא על הספסל.","נמצא במשחק, אבל לא מתחיל אותו.","בספסל ולא בהרכב הפותח."],
- rb:["הוא בכלל לא בסגל היום","לא הגיע למשחק הזה","פצוע, לא כשיר, או פשוט לא נבחר","לא, הוא לא איתנו הערב","הוא לא ברשימה להיום","מחוץ לסגל במשחק הזה","אין אותו היום בכלל"],
+ r5:["פצוע, לא ישחק היום.","בחדר הטיפולים היום.","פצוע ונח, לא היום.","בטיפולים, לא כשיר למשחק."],
+ rn:["לא בהרכב הפותח","לא פותח היום","לא ב-11 של היום"],
+ rb:["הוא בכלל לא בסגל היום","לא הגיע למשחק הזה","לא נבחר לסגל הפעם","לא, הוא לא איתנו הערב","הוא לא ברשימה להיום","מחוץ לסגל במשחק הזה","אין אותו היום בכלל"],
  mid:["פייר? אני לא יודע באיזה תפקיד בדיוק פליק שם אותו היום, אז נחכה למשחק ונבין","בקישור הכל זורם, אז מי יודע מה התפקיד המדויק שלו היום","פליק מזיז את הקישור כל הזמן, אז נראה בשטח מה יצא","בקישור של פליק אין עמדות קבועות, רק רעיונות","נספור את זה כניחוש מצוין, את התפקיד המדויק נגלה בשריקה","בשלישיית הקישור הם מתחלפים כל חמש דקות, אז מה זה כבר משנה","פליק רושם אחד ובפועל עושה אחר, ככה זה בקישור","יפה! בקישור הגבולות מטושטשים, אז נראה מה יקרה בפועל","שלישיית הקישור של פליק היא יותר שיתוף פעולה מאשר עמדות","קולע! ובקישור ממילא כולם מסתובבים אחד סביב השני"],
  known:["זה כבר רשום לך בפנקס","היי, את חוזרת על עצמך","אותו שחקן, אותה תשובה","את כבר פסלת אותו קודם","בדקת אותו כבר במשחק הזה"],
  none:["לא מכיר אף שחקן כזה","השם הזה לא קיים אצלי","אין לי שחקן בשם הזה"]
@@ -1864,6 +1938,8 @@ function factText(g,f){
   if(f.t==="slot") return "בהרכב, "+labelOf(g,f.k)+" ✓";
   if(f.t==="line") return "בהרכב, בעמדה אחרת";
   if(f.t==="bench") return "על הספסל";
+  if(f.t==="inj") return "פצוע";
+  if(f.t==="nx") return "לא בהרכב היום";
   return "לא בסגל היום";
 }
 function factClass(f){return f.t==="slot"?"k-ok":f.t==="line"?"k-line":"k-out"}
@@ -1871,12 +1947,14 @@ function factShort(g,f){
   if(f.t==="slot") return "✓ "+labelOf(g,f.k);
   if(f.t==="line") return "בהרכב, לא כאן";
   if(f.t==="bench") return "ספסל";
+  if(f.t==="inj") return "פצוע";
+  if(f.t==="nx") return "לא בהרכב";
   return "לא בסגל";
 }
 function knownHtml(g,p){
   const ids=Object.keys(p.known||{}).filter(id=>p.known[id].t!=="slot");
   if(!ids.length) return '<p class="empty-s">עוד לא גילית כלום. כל ניחוש לא נכון נרשם כאן.</p>';
-  const order={line:0,bench:1,out:2};
+  const order={line:0,bench:1,inj:2,out:3,nx:4};
   ids.sort((a,b)=>order[p.known[a].t]-order[p.known[b].t]);
   return '<div class="known">'+ids.map(id=>{const f=p.known[id];const pl=byId(id);if(!pl)return"";
     return '<span class="kchip '+factClass(f)+'">'+esc(callName(pl))+'<b>'+esc(factShort(g,f))+'</b></span>';}).join("")+'</div>';
@@ -2227,7 +2305,7 @@ function evaluate(k,pid){
   const f=p.known[pid];
   if(f && g.lineup[k]!==pid){
     let ruled=false;
-    if(f.t==="out"||f.t==="bench")ruled=true;
+    if(f.t==="out"||f.t==="bench"||f.t==="inj"||f.t==="nx")ruled=true;
     else if(f.t==="slot"&&f.k!==k)ruled=true;
     else if(f.t==="line"&&f.line!==myLine)ruled=true;
     if(ruled){
@@ -2276,9 +2354,15 @@ function evaluate(k,pid){
   }else if((g.bench||[]).includes(pid)){
     r="r4"; head=esc(nm)+' '+pick(MSG.r4); body=''; why='על הספסל';
     learn(p,pid,{t:"bench"});
-  }else{
+  }else if((g.injured||[]).includes(pid)){
+    r="r5"; head=esc(nm)+' '+pick(MSG.r5); body=''; why='פצוע';
+    learn(p,pid,{t:"inj"});
+  }else if(!g.out||g.out.includes(pid)){
     r="rb"; head=pick(MSG.rb); body=esc(nm)+' לא בסגל למשחק הזה.'; why='לא בסגל';
     learn(p,pid,{t:"out"});
+  }else{
+    r="rn"; head=pick(MSG.rn); body=esc(nm)+' לא בהרכב הפותח של היום.'; why='לא בהרכב';
+    learn(p,pid,{t:"nx"});
   }
   if(!st.tries.some(t=>t.id===pid)){ st.tries.push({id:pid,name:nm,r}); st.log.push({t:"wrong",name:nm,why:why}); }
   if(!p.allWrong)p.allWrong={}; p.allWrong[pid]=(p.allWrong[pid]||0)+1;
@@ -2298,9 +2382,13 @@ function evaluate(k,pid){
   const n=st.tries.length;
   renderPlay(); currentSlot=k; renderSlotSheet(k,html,"",false); wrongFx(callName(byId(pid)));
   if(inLineup) queuePlaceOffer(k,pid,r,head);
-  if(n===2&&!st.yc){ st.yc=true; saveProg(p); setTimeout(()=>showCard("yellow",pick(YELLOW),()=>maybeBreak(p)),500); }
-  else if(n===3&&!st.rc){ st.rc=true; saveProg(p); setTimeout(()=>showCard("red",pick(RED),()=>varCheck()),500); }
-  else maybeBreak(p);
+  const after=()=>{
+    if(n===2&&!st.yc){ st.yc=true; saveProg(p); setTimeout(()=>showCard("yellow",pick(YELLOW),()=>maybeBreak(p)),500); }
+    else if(n===3&&!st.rc){ st.rc=true; saveProg(p); setTimeout(()=>showCard("red",pick(RED),()=>varCheck()),500); }
+    else maybeBreak(p);
+  };
+  const kind={r4:"bench",r5:"inj",rb:"out"}[r];
+  if(kind) queueStatus(kind,pid,after); else after();   // the status window first, then any card
 }
 
 /* Player cards (trial). To add one: put the image in assets/cards/ and map the player id here. */
@@ -2461,7 +2549,7 @@ function doPlace(k,pid){
   if(!st.log)st.log=[];
   const where=Object.keys(g.lineup).find(key=>g.lineup[key]===pid);
   const hisLine=where?lineOf(g,where):null;
-  const why = where ? 'בהרכב, עמדה אחרת' : ((g.bench||[]).includes(pid)?'על הספסל':'לא בסגל');
+  const why = where ? 'בהרכב, עמדה אחרת' : ((g.bench||[]).includes(pid)?'על הספסל':(g.injured||[]).includes(pid)?'פצוע':(!g.out||g.out.includes(pid))?'לא בסגל':'לא בהרכב');
   if(!st.tries.some(x=>x.id===pid)){ st.tries.push({id:pid,name:nm,r:where?(hisLine===lineOf(g,k)?"r2":"r3"):"rb"}); st.log.push({t:"wrong",name:nm,why:why}); }
   if(!p.allWrong)p.allWrong={}; p.allWrong[pid]=(p.allWrong[pid]||0)+1;
   if(where) learn(p,pid,{t:"line",line:hisLine});
@@ -2513,6 +2601,15 @@ let opTab="lineup";
 document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{opTab=b.dataset.tab;document.querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("on",x===b));renderOperator();});
 function getDraft(){let d=jget(K.draft,null); if(d&&!FORMATIONS[d.formation]){d.formation='433';d.lineup={};}if(!d){const g=getGame();d=g?{opp:g.opp,comp:g.comp,formation:FORMATIONS[g.formation]?g.formation:"433",lineup:{...g.lineup},bench:[...(g.bench||[])]}:{opp:"",comp:"laliga",formation:"433",lineup:{},bench:[]};}return d;}
 function saveDraft(d){jset(K.draft,d)}
+function fixDraft(d){
+  d.bench=d.bench||[]; d.injured=d.injured||[]; d.outOff=d.outOff||[];
+  const g=getGame();
+  if(g&&!d._st){ d._st=1;
+    if(!d.injured.length&&g.injured) d.injured=[...g.injured];
+    if(g.out){ const used=new Set([...Object.values(g.lineup),...(g.bench||[]),...(g.injured||[])]);
+      d.outOff=squad.filter(p=>!used.has(p.id)&&!g.out.includes(p.id)).map(p=>p.id); } }
+  return d;
+}
 function renderOperator(){ if(opTab==="lineup")renderLineupTab(); else renderSquadTab(); }
 const opAll=new Set();
 function playerOptions(sel,taken,cat){
@@ -2526,7 +2623,7 @@ function playerOptions(sel,taken,cat){
   return h;
 }
 function renderLineupTab(){
-  const d=getDraft(); const g=getGame(); const slots=slotsOf(d.formation||'433');
+  const d=fixDraft(getDraft()); const g=getGame(); const slots=slotsOf(d.formation||'433');
   const taken=new Set(Object.values(d.lineup).filter(Boolean));
   let h='';
   h+=g?'<div class="status">משחק פעיל: נגד '+esc(g.opp||"היריבה")+'. הפעלה מחדש או סיום יאפסו את הניחושים.</div>':'<div class="status off">אין משחק פעיל כרגע.</div>';
@@ -2545,8 +2642,9 @@ function renderLineupTab(){
          '<span class="osl">'+esc(pl?callName(pl):s.label)+'</span></button>';}).join("")+
      '</div></div>';
   const benchPool=squad.filter(p=>!taken.has(p.id));
-  h+='<div class="card"><h3>ספסל <span style="font-weight:400;font-size:14px;color:var(--ink-soft)">('+d.bench.filter(id=>!taken.has(id)).length+')</span></h3><p style="margin:0 0 10px;font-size:14px;color:var(--ink-soft)">מי שלא מסומן כאן ולא בהרכב יוצג לה כ"לא בסגל / פצוע / לא כשיר".</p><div class="chips">'+
+  h+='<div class="card"><h3>ספסל <span style="font-weight:400;font-size:14px;color:var(--ink-soft)">('+d.bench.filter(id=>!taken.has(id)).length+')</span></h3><p class="st-help">סמן את מי שעל הספסל. שתי הרשימות הבאות מתעדכנות לבד ומציגות רק את מי שנשאר.</p><div class="chips">'+
      benchPool.map(p=>'<button class="chip '+(d.bench.includes(p.id)?"on":"")+'" data-b="'+p.id+'">'+esc(fullName(p))+'</button>').join("")+'</div></div>';
+  h+='<div id="statusCards">'+statusCardsHtml(d,taken)+'</div>';
   h+='<div class="op-foot"><button class="btn gold" id="launch" style="flex:1;font-size:18px;padding:14px">הפעל משחק</button>'+(g?'<button class="btn danger" id="endGame">סיים משחק</button>':'')+'</div><div class="err" id="opErr"></div>';
   $("#opBody").innerHTML=h;
 
@@ -2555,20 +2653,47 @@ function renderLineupTab(){
   $("#opp").oninput=e=>{d.opp=e.target.value;saveDraft(d);oppHint();}; oppHint();
   document.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{d.comp=b.dataset.c;saveDraft(d);renderLineupTab()});
   document.querySelectorAll("[data-os]").forEach(b=>b.onclick=()=>opPicker(b.dataset.os));
-  document.querySelectorAll("[data-b]").forEach(b=>b.onclick=()=>{const id=b.dataset.b;d.bench=d.bench.includes(id)?d.bench.filter(x=>x!==id):[...d.bench,id];saveDraft(d);b.classList.toggle("on");
-    b.closest(".card").querySelector("h3 span").textContent="("+d.bench.filter(x=>!taken.has(x)).length+")";});
+  document.querySelectorAll("[data-b]").forEach(b=>b.onclick=()=>{const id=b.dataset.b;
+    if(d.bench.includes(id)) d.bench=d.bench.filter(x=>x!==id); else { d.bench=[...d.bench,id]; d.injured=d.injured.filter(x=>x!==id); }
+    saveDraft(d); b.classList.toggle("on");
+    b.closest(".card").querySelector("h3 span").textContent="("+d.bench.filter(x=>!taken.has(x)).length+")";
+    refreshStatus(d,taken);});
+  bindStatus(d,taken);
   let armed=false;
   $("#launch").onclick=()=>{
     const missing=slots.filter(s=>!d.lineup[s.k]);
     if(missing.length){$("#opErr").textContent="חסרים שחקנים בעמדות: "+missing.map(s=>s.label).join(", ");return;}
     if(getGame()&&!armed){armed=true;$("#launch").textContent="לחץ שוב כדי לאפס ולהפעיל";return;}
     const lineup={};slots.forEach(s=>lineup[s.k]=d.lineup[s.k]);
-    setGame({id:String(Date.now()),opp:d.opp.trim(),date:todayStr(),comp:d.comp||"laliga",formation:d.formation,lineup,bench:d.bench.filter(id=>!Object.values(lineup).includes(id))});
+    const inXI=new Set(Object.values(lineup));
+    const bench=d.bench.filter(id=>!inXI.has(id));
+    const injured=d.injured.filter(id=>!inXI.has(id)&&!bench.includes(id));
+    const used=new Set([...inXI,...bench,...injured]);
+    const out=squad.filter(p=>!used.has(p.id)&&!d.outOff.includes(p.id)).map(p=>p.id);
+    setGame({id:String(Date.now()),opp:d.opp.trim(),date:todayStr(),comp:d.comp||"laliga",formation:d.formation,lineup,bench,injured,out});
     sdel(K.prog); sdel(K.draft); toast("המשחק הופעל"); show("home");
   };
   const eg=$("#endGame"); if(eg){let a2=false;eg.onclick=()=>{if(!a2){a2=true;eg.textContent="בטוח? לחץ שוב";return;}setGame(null);sdel(K.prog);sdel(K.draft);renderLineupTab();toast("המשחק הסתיים");};}
 }
 
+function statusCardsHtml(d,taken){
+  const injPool=squad.filter(p=>!taken.has(p.id)&&!d.bench.includes(p.id));
+  const outPool=injPool.filter(p=>!d.injured.includes(p.id));
+  const outOn=outPool.filter(p=>!d.outOff.includes(p.id));
+  return '<div class="card"><h3>פצוע <span class="st-n">('+d.injured.filter(id=>injPool.some(p=>p.id===id)).length+')</span></h3>'+
+     '<p class="st-help">כל מי שלא בהרכב ולא בספסל. סמן את הפצועים.</p><div class="chips inj">'+
+     (injPool.length?injPool.map(p=>'<button class="chip '+(d.injured.includes(p.id)?"on":"")+'" data-i="'+p.id+'">'+esc(fullName(p))+'</button>').join(""):'<span class="st-none">אין שחקנים שנשארו.</span>')+'</div></div>'+
+   '<div class="card"><h3>לא בסגל <span class="st-n">('+outOn.length+')</span></h3>'+
+     '<p class="st-help">כל מי שנשאר, כבר מסומן. מי שתוריד ממנו את הסימון יוצג לה פשוט כ"לא בהרכב", בלי אנימציה.</p><div class="chips out">'+
+     (outPool.length?outPool.map(p=>'<button class="chip '+(d.outOff.includes(p.id)?"":"on")+'" data-o="'+p.id+'">'+esc(fullName(p))+'</button>').join(""):'<span class="st-none">אין שחקנים שנשארו.</span>')+'</div></div>';
+}
+function refreshStatus(d,taken){ const c=document.getElementById("statusCards"); if(!c)return; c.innerHTML=statusCardsHtml(d,taken); bindStatus(d,taken); }
+function bindStatus(d,taken){
+  document.querySelectorAll("[data-i]").forEach(b=>b.onclick=()=>{const id=b.dataset.i;
+    d.injured=d.injured.includes(id)?d.injured.filter(x=>x!==id):[...d.injured,id]; saveDraft(d); refreshStatus(d,taken);});
+  document.querySelectorAll("[data-o]").forEach(b=>b.onclick=()=>{const id=b.dataset.o;
+    d.outOff=d.outOff.includes(id)?d.outOff.filter(x=>x!==id):[...d.outOff,id]; saveDraft(d); refreshStatus(d,taken);});
+}
 function svgPitchLines(){return '<svg class="lines" viewBox="0 0 68 100" preserveAspectRatio="none" fill="none" stroke="rgba(255,255,255,.5)" stroke-width=".35">'+
  '<rect x="3" y="3" width="62" height="94"/><line x1="3" y1="50" x2="65" y2="50"/><circle cx="34" cy="50" r="8"/>'+
  '<rect x="15" y="3" width="38" height="15"/><rect x="15" y="82" width="38" height="15"/></svg>';}
@@ -2593,7 +2718,7 @@ function opPicker(k){
   document.querySelectorAll("[data-pk]").forEach(b=>b.onclick=()=>{
     const dd=getDraft(); const id=b.dataset.pk;
     Object.keys(dd.lineup).forEach(key=>{ if(dd.lineup[key]===id) delete dd.lineup[key]; });
-    dd.lineup[k]=id; dd.bench=dd.bench.filter(x=>x!==id);
+    dd.lineup[k]=id; dd.bench=dd.bench.filter(x=>x!==id); dd.injured=(dd.injured||[]).filter(x=>x!==id);
     saveDraft(dd); closeSheet(); renderLineupTab();
   });
 }
