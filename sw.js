@@ -115,17 +115,8 @@ const CORE = [
   "assets/lottie/notsquad.json",
   "assets/lottie/trophy.json",
   "assets/lottie/whistle.json",
-  "assets/teams/P.png",
-  "assets/teams/S.png",
   "assets/teams/atletico.png",
-  "assets/teams/barcelona.png",
-  "assets/teams/p-a.png",
-  "assets/teams/p-b.png",
-  "assets/teams/p-op.png",
-  "assets/teams/s-home.png",
-  "assets/teams/s-op.png",
-  "assets/teams/s-op2.png",
-  "assets/teams/s-play.png"
+  "assets/teams/barcelona.png"
 ];
 self.addEventListener("install", e => { self.skipWaiting(); e.waitUntil(caches.open(CACHE).then(c => Promise.all(CORE.map(u => c.add(u).catch(() => {}))))); });
 self.addEventListener("activate", e => e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())));
