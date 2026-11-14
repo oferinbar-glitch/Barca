@@ -1032,6 +1032,30 @@ body.cam-on .backdrop{background:rgba(5,10,30,.3)}
 .xi-f{width:calc(50px*var(--sc,1));height:calc(50px*var(--sc,1))}
 .xi-n{background:var(--chalk);color:var(--night);font-weight:700;font-size:12px;padding:2px 8px;border-radius:6px}
 @media (prefers-reduced-motion: reduce){.tf-sweep,.pitch .slot .shirt .q,.pitch .slot.focus .shirt,.pips i.new{animation:none}#play .pitch{transition:none}}
+
+/* ===== pass 28 ===== */
+.page.rules{padding:6px 18px 44px}
+/* holographic card */
+.hc{width:min(58vw,236px);aspect-ratio:640/800;margin:0 auto 6px;perspective:820px;touch-action:none;cursor:grab;-webkit-user-select:none;user-select:none}
+.hc-in{position:relative;width:100%;height:100%;transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));filter:drop-shadow(0 18px 24px rgba(0,0,0,.55));will-change:transform}
+.hc-in img{width:100%;height:100%;display:block;-webkit-user-drag:none;pointer-events:none}
+.hc-foil,.hc-glare{position:absolute;inset:0;pointer-events:none;-webkit-mask:url("assets/cards/mask.png") center/100% 100%;mask:url("assets/cards/mask.png") center/100% 100%}
+.hc-foil{background:repeating-linear-gradient(115deg,rgba(255,60,140,0) 0%,rgba(255,60,140,.6) 7%,rgba(255,214,60,.6) 14%,rgba(70,255,170,.55) 21%,rgba(70,160,255,.6) 28%,rgba(190,100,255,.6) 35%,rgba(255,60,140,0) 42%);
+  background-size:280% 280%;background-position:var(--px,50%) var(--py,50%);mix-blend-mode:overlay;opacity:.62}
+.hc-glare{background:radial-gradient(circle at var(--px,50%) var(--py,50%),rgba(255,255,255,.55),rgba(255,255,255,.1) 24%,transparent 50%);mix-blend-mode:soft-light}
+.hc.rev .hc-in img{filter:grayscale(.6)}
+.hc.rev .hc-foil{opacity:.12}
+.hc-tip{text-align:center;font-size:12px;color:#8794bd;margin-bottom:12px}
+/* sheet navigation and swipe */
+.sh-nav{display:flex;gap:6px;flex:none}
+.sh-nav button{width:34px;height:34px;border-radius:50%;border:0;display:grid;place-items:center;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);color:var(--chalk)}
+.sh-nav button:active{background:var(--gold);color:#1a1300}
+.sheet .grab,.sheet .sheet-head{touch-action:none}
+.sheet .grab{width:44px;height:5px}
+/* home progress */
+.tk-prog{margin-top:12px;padding-top:11px;border-top:1px dashed rgba(255,255,255,.18)}
+.tk-prog span{display:block;font-size:12.5px;color:#c9d1ea;margin-bottom:7px}
+.tk-prog .pips{margin:0 auto;max-width:240px}
 </style>
 </head>
 <body>
@@ -1317,7 +1341,7 @@ function openKeyboardFor(inp){
     const stopRepeat=()=>{ clearTimeout(rep1); clearInterval(rep2); rep1=rep2=null; };
     b.onclick=ev=>ev.preventDefault();                                 // input happens on pointer events only
     b.onpointerdown=ev=>{ ev.preventDefault(); live=true; try{ b.setPointerCapture(ev.pointerId); }catch(e){}
-      b.classList.add("pop"); buzz("tap");
+      b.classList.add("pop"); buzz("tap"); uiSnd("key");
       if(c==="BS"){ typeKey("BS"); rep1=setTimeout(()=>{ rep2=setInterval(()=>{ typeKey("BS"); buzz("tap"); },70); },420); } };
     b.onpointerup=ev=>{ if(live&&c!=="BS") typeKey(c); live=false; stopRepeat(); setTimeout(()=>b.classList.remove("pop"),70); };
     b.onpointercancel=()=>{ live=false; stopRepeat(); b.classList.remove("pop"); };
@@ -1343,7 +1367,7 @@ function kbSuggest(){
   box.querySelectorAll("[data-sug]").forEach(b=>{
     b.onclick=ev=>ev.preventDefault();
     b.onpointerdown=ev=>{ ev.preventDefault(); b.classList.add("pop"); buzz("tap"); };
-    b.onpointerup=()=>{ const x=byId(b.dataset.sug); if(!x||!KB_IN) return; KB_IN.value=callName(x); kbSuggest();
+    b.onpointerup=()=>{ const x=byId(b.dataset.sug); if(!x||!KB_IN) return; KB_IN.value=callName(x); kbSuggest(); uiSnd("pick");
       const c=document.getElementById("checkBtn"); if(c){ c.classList.remove("nudge"); void c.offsetWidth; c.classList.add("nudge"); } };
     b.onpointercancel=()=>b.classList.remove("pop");
   });
@@ -1485,7 +1509,7 @@ function statusWin(kind,pid,fin){
   buzz("flag");
 }
 function wrongFx(nm){
-  buzz("wrong"); shakeField();
+  buzz("wrong"); shakeField(); uiSnd("wrong");
   if(reduceMotion||typeof gsap==="undefined") return;
   const chip=[...document.querySelectorAll("#sheet .kchip")].find(c=>c.firstChild&&c.firstChild.textContent===nm);
   const f=document.querySelector("#sheet .field"); if(!chip||!f) return;
@@ -1647,6 +1671,8 @@ function renderHome(){
     btn.disabled=false;
     const started=prog&&prog.gameId===g.id&&Object.values(prog.slots||{}).some(s=>s.done||s.tries.length);
     btn.textContent=started?"המשיכי לנחש":"את המאמנת היום";
+    if(started){ const dn=Object.values(prog.slots).filter(s=>s.done).length;
+      body.insertAdjacentHTML("beforeend",'<div class="tk-prog"><span>'+dn+' מתוך 11 כבר על הדשא</span><i class="pips">'+Array.from({length:11},(_,i)=>'<i'+(i<dn?' class="on"':'')+'></i>').join("")+'</i></div>'); }
   }else{
     body.innerHTML='<div class="tk-top"><span>המשחק הבא</span></div><div class="opp">עוד אין הרכב</div><div class="when">ההרכב ייפתח אחרי שהמפעיל יזין אותו</div>';
     $("#ticketComp").innerHTML='';
@@ -1753,6 +1779,21 @@ function pick(a){return a[Math.floor(Math.random()*a.length)]}
 /* ---- sound ---- */
 let AC=null;
 function audio(){ try{ if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==="suspended")AC.resume(); return AC; }catch(e){return null} }
+/* Tiny synthesized interface sounds. Quiet on purpose, and silent when the game is muted. */
+function ping(f,dur,gain,type,to,at){
+  if(muted) return; const ac=audio(); if(!ac) return;
+  try{ const t=ac.currentTime+(at||0); const o=ac.createOscillator(), g=ac.createGain();
+    o.type=type||"sine"; o.frequency.setValueAtTime(f,t); if(to) o.frequency.exponentialRampToValueAtTime(to,t+dur);
+    g.gain.setValueAtTime(0.0001,t); g.gain.exponentialRampToValueAtTime(gain,t+0.006); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+    o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+dur+0.02); }catch(e){}
+}
+function uiSnd(kind){
+  if(kind==="key") ping(1180,.035,.028,"triangle");
+  else if(kind==="pick"){ ping(784,.07,.05,"sine"); ping(1175,.09,.05,"sine",0,.06); }
+  else if(kind==="nav") ping(520,.06,.035,"sine",760);
+  else if(kind==="wrong") ping(165,.22,.12,"sine",92);
+  else if(kind==="line") [523,659,784,1047].forEach((f,i)=>ping(f,.26,.065,"triangle",0,i*.085));
+}
 function blow(t0,dur,gainPeak){
   const ac=audio(); if(!ac)return;
   const g=ac.createGain(); g.connect(ac.destination);
@@ -2102,17 +2143,42 @@ function historyHtml(st,pl){
   return rows?'<ol class="hist">'+rows+'</ol>':'';
 }
 
+/* Holographic card: tilts and shines with the finger, the phone's tilt, or by itself when left alone. */
+function holoBind(){
+  const hc=document.getElementById("hc"); if(!hc) return;
+  const inn=hc.querySelector(".hc-in"); if(reduceMotion) return;
+  let px=.5,py=.5,tx=.5,ty=.5,last=-9999,base=null,held=false;
+  const set=(x,y)=>{ tx=Math.max(0,Math.min(1,x)); ty=Math.max(0,Math.min(1,y)); last=performance.now(); };
+  const onP=e=>{ const r=hc.getBoundingClientRect(); set((e.clientX-r.left)/r.width,(e.clientY-r.top)/r.height); };
+  hc.onpointerdown=e=>{ held=true; try{ hc.setPointerCapture(e.pointerId); }catch(_){} onP(e); };
+  hc.onpointermove=e=>{ if(held) onP(e); };
+  hc.onpointerup=hc.onpointercancel=()=>{ held=false; };
+  const onO=e=>{ if(e.gamma==null||e.beta==null||held) return; if(!base) base={b:e.beta,g:e.gamma};
+    if(Math.abs(e.gamma-base.g)+Math.abs(e.beta-base.b)<1.2) return;      // a phone lying still does not count as input
+    set(.5+(e.gamma-base.g)/38,.5+(e.beta-base.b)/38); };
+  window.addEventListener("deviceorientation",onO);
+  const loop=t=>{
+    if(!hc.isConnected||!$("#sheet").classList.contains("open")){ window.removeEventListener("deviceorientation",onO); return; }
+    if(!held&&performance.now()-last>1500){ tx=.5+.34*Math.sin(t/950); ty=.5+.2*Math.cos(t/1400); }
+    px+=(tx-px)*.13; py+=(ty-py)*.13;
+    inn.style.setProperty("--rx",((.5-py)*24).toFixed(2)+"deg"); inn.style.setProperty("--ry",((px-.5)*30).toFixed(2)+"deg");
+    inn.style.setProperty("--px",(px*100).toFixed(1)+"%"); inn.style.setProperty("--py",(py*100).toFixed(1)+"%");
+    requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
+}
 function openSlot(k){
   const g=getGame(); const p=getProg(g); const st=p.slots[k]; currentSlot=k;
   const label=labelOf(g,k);
   if(st.done){
     const pl=byId(g.lineup[k]); const ph=pl?photoOf(pl.id):null;
     openSheet('<div class="sheet-head"><h2>'+esc(label)+'</h2><button class="close" data-close>סגירה</button></div>'+
-      (ph?'<img class="big-face" alt="" src="'+ph+'"'+(st.revealed?' style="box-shadow:0 0 0 4px #9aa3b8"':'')+'>':'')+
+      (pl&&PLAYER_CARDS[pl.id]?'<div class="hc'+(st.revealed?' rev':'')+'" id="hc"><div class="hc-in"><img alt="" src="'+PLAYER_CARDS[pl.id]+'"><i class="hc-foil"></i><i class="hc-glare"></i></div></div><div class="hc-tip">גררי את הכרטיס או הטי את הטלפון</div>':
+       (ph?'<img class="big-face" alt="" src="'+ph+'"'+(st.revealed?' style="box-shadow:0 0 0 4px #9aa3b8"':'')+'>':''))+
       '<div class="result" style="border-color:'+(st.revealed?"var(--ink-soft)":"var(--ok)")+'"><b>'+esc(pl?fullName(pl):"")+'</b>'+
       (st.assisted?(st.assistOk?"בחרת נכון מתוך שתי אפשרויות":"קיבלת את התשובה מתוך שתי אפשרויות"):(st.revealed?"העמדה נחשפה בלי ניחוש":"ניחשת נכון"))+'</div>'+
       '<div class="section-t">מה ניחשת בעמדה</div>'+historyHtml(st,pl));
-    bindClose(); return;
+    bindClose(); holoBind(); return;
   }
   renderSlotSheet(k,null,"",false);
 }
@@ -2162,10 +2228,13 @@ function renderSlotSheet(k,resultHtml,keepValue,focusInput){
   if(st.tries.length>=2&&pl&&FORGETFUL.includes(pl.id)){
     hints+='<div class="hint col nudge"><span class="k">רמז קטן</span><div class="info-txt">את כל הזמן שוכחת את השחקן הזה... הוא בסגל, הוא לא חדש, ואת תמיד נזכרת בו רק אחרי שאומרים לך. תחשבי שוב.</div></div>';
   }
+  const openKs=slotsOf(g.formation).map(s=>s.k).filter(x=>!p.slots[x].done);
+  const navHtml=openKs.length>1?'<div class="sh-nav"><button data-nav="-1" aria-label="העמדה הקודמת"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>'+
+    '<button data-nav="1" aria-label="העמדה הבאה"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg></button></div>':'';
   const nT=st.tries.length;
   const triesHtml='<div class="sh-tries" aria-label="'+nT+' ניסיונות שגויים">'+[0,1,2].map(i=>'<i class="'+(i<nT?'on t'+(i+1):'')+'"></i>').join("")+(nT>3?'<b>+'+(nT-3)+'</b>':'')+'</div>';
   openSheet(
-    '<div class="sheet-head sh2"><div class="sh-t"><small>מי פותח היום בעמדת</small><h2>'+esc(label)+'</h2></div>'+triesHtml+
+    '<div class="sheet-head sh2"><div class="sh-t"><small>מי פותח היום בעמדת</small><h2>'+esc(label)+'</h2></div>'+navHtml+triesHtml+
     '<button class="close x" data-close aria-label="סגירה"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>'+
     '<div class="field"><input id="guess" readonly inputmode="none" autocomplete="off" autocorrect="off" spellcheck="false" placeholder="שם השחקן"><button class="btn gold" id="checkBtn">בדיקה</button></div>'+
     '<div id="res">'+(resultHtml||"")+'</div>'+
@@ -2174,6 +2243,9 @@ function renderSlotSheet(k,resultHtml,keepValue,focusInput){
     '<div class="reveal-zone"><button class="btn danger sm" id="revealBtn">תגלה לי</button><div class="rv-note">נצמצם לך לשתי אפשרויות</div></div>'
   );
   bindClose(); camFocus();
+  document.querySelectorAll("#sheet [data-nav]").forEach(b=>b.onclick=()=>{ const i=openKs.indexOf(k); if(i<0) return;
+    const nk=openKs[(i+Number(b.dataset.nav)+openKs.length)%openKs.length]; uiSnd("nav"); buzz("tap"); openSlot(nk);
+    const hd=document.querySelector("#sheet .sh-t"); if(hd&&HAS_G()&&!reduceMotion) gsap.from(hd,{x:Number(b.dataset.nav)*-26,opacity:0,duration:.28,ease:"power2.out"}); });
   const inp=$("#guess"); if(keepValue)inp.value=keepValue;
   inp.onmousedown=e=>{e.preventDefault(); openKeyboard(k);};
   inp.ontouchstart=e=>{e.preventDefault(); openKeyboard(k);};
@@ -2721,7 +2793,7 @@ function lineCheer(g,p){
   const els=hit.ks.map(k=>document.querySelector('#pitch [data-slot="'+k+'"]')).filter(Boolean); if(!els.length) return;
   const ys=els.map(e=>{const r=e.getBoundingClientRect();return r.top+r.height/2;}); const y=ys.reduce((a,b)=>a+b,0)/ys.length;
   const d=document.createElement("div"); d.className="line-fx"; d.style.top=(y+46)+"px"; d.innerHTML='<i></i><b>'+LINE_DONE[hit.L]+'</b>'; document.body.appendChild(d);
-  buzz("ok");
+  buzz("ok"); uiSnd("line");
   gsap.timeline({onComplete:()=>d.remove()})
     .fromTo(d.querySelector("i"),{scaleX:0},{scaleX:1,duration:.38,ease:"power3.out"})
     .fromTo(d.querySelector("b"),{y:26,opacity:0,scale:.8},{y:0,opacity:1,scale:1,duration:.34,ease:"back.out(2.2)"},"-=.18")
@@ -2738,6 +2810,18 @@ function checkFinish(){
     finishFx(); fullTime(); fireworksFx(); buzz('win');
   }
 }
+(function(){   // swipe the sheet down to close it
+  const sh=$("#sheet"); let sy=0,dy=0,on=false,t0=0;
+  sh.addEventListener("pointerdown",e=>{
+    if(!sh.classList.contains("open")||e.target.closest("button,input,.hc")) return;
+    if(e.clientY-sh.getBoundingClientRect().top>70||sh.scrollTop>0) return;
+    on=true; sy=e.clientY; dy=0; t0=performance.now(); sh.style.transition="none"; try{ sh.setPointerCapture(e.pointerId); }catch(_){}
+  });
+  sh.addEventListener("pointermove",e=>{ if(!on) return; dy=Math.max(0,e.clientY-sy); sh.style.transform="translateY("+dy+"px)"; });
+  const end=()=>{ if(!on) return; on=false; const v=dy/Math.max(1,performance.now()-t0);
+    sh.style.transition=""; sh.style.transform=""; if(dy>120||(dy>36&&v>.55)) closeSheet(); };
+  sh.addEventListener("pointerup",end); sh.addEventListener("pointercancel",end);
+})();
 $("#rulesBtn").onclick=()=>show("rules");
 $("#muteBtn").onclick=toggleMute; renderMute();
 $("#opLink").onclick=()=>show("operator");
