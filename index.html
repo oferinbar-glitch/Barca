@@ -2170,7 +2170,8 @@ function holoBind(){
 function openSlot(k){
   const g=getGame(); const p=getProg(g); const st=p.slots[k]; currentSlot=k;
   const label=labelOf(g,k);
-  if(st.done){
+  if(st.done){ currentSlot=null; return; }
+  if(false){
     const pl=byId(g.lineup[k]); const ph=pl?photoOf(pl.id):null;
     openSheet('<div class="sheet-head"><h2>'+esc(label)+'</h2><button class="close" data-close>סגירה</button></div>'+
       (pl&&PLAYER_CARDS[pl.id]?'<div class="hc'+(st.revealed?' rev':'')+'" id="hc"><div class="hc-in"><img alt="" src="'+PLAYER_CARDS[pl.id]+'"><i class="hc-foil"></i><i class="hc-glare"></i></div></div><div class="hc-tip">גררי את הכרטיס או הטי את הטלפון</div>':
