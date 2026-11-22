@@ -1,5 +1,5 @@
 // Network-first: always the newest version when online; cached copy when offline.
-const CACHE = "lineup-5118e964";
+const CACHE = "lineup-3521b223";
 const CORE = [
   "./",
   "index.html",
@@ -117,6 +117,9 @@ const CORE = [
   "assets/lottie/whistle.json",
   "assets/teams/atletico.png",
   "assets/teams/barcelona.png",
+  "assets/teams/celta.png",
+  "assets/teams/deportivo.png",
+  "assets/teams/sabah.png",
   "assets/teams/villarreal.png"
 ];
 self.addEventListener("install", e => { self.skipWaiting(); e.waitUntil(caches.open(CACHE).then(c => Promise.all(CORE.map(u => c.add(u).catch(() => {}))))); });
