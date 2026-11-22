@@ -1,5 +1,5 @@
 // Network-first: always the newest version when online; cached copy when offline.
-const CACHE = "lineup-0f4c39e5";
+const CACHE = "lineup-5118e964";
 const CORE = [
   "./",
   "index.html",
