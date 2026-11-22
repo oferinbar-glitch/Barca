@@ -1056,25 +1056,6 @@ body.cam-on .backdrop{background:rgba(5,10,30,.3)}
 .tk-prog{margin-top:12px;padding-top:11px;border-top:1px dashed rgba(255,255,255,.18)}
 .tk-prog span{display:block;font-size:12.5px;color:#c9d1ea;margin-bottom:7px}
 .tk-prog .pips{margin:0 auto;max-width:240px}
-
-/* ===== pass 30: line-up pull ===== */
-.api-card{border:1.5px solid rgba(237,187,0,.45)}
-.api-pull{width:100%;font-size:17px;padding:13px;position:relative}
-.api-pull.busy{opacity:.75;pointer-events:none}
-.api-pull.busy span::after{content:"";display:inline-block;width:14px;height:14px;margin-inline-start:8px;vertical-align:-2px;border-radius:50%;border:2px solid currentColor;border-top-color:transparent;animation:apiSpin .7s linear infinite}
-@keyframes apiSpin{to{transform:rotate(360deg)}}
-.api-out:empty{display:none}
-.api-out{margin-top:12px}
-.api-note{padding:11px 13px;border-radius:12px;font-size:14px;line-height:1.55}
-.api-note.ok{background:rgba(46,160,90,.14);border:1px solid rgba(46,160,90,.4)}
-.api-note.wait{background:rgba(237,187,0,.12);border:1px solid rgba(237,187,0,.4)}
-.api-note.bad{background:rgba(214,40,70,.12);border:1px solid rgba(214,40,70,.45)}
-.api-un{margin-top:12px;font-size:14px}
-.api-row{display:grid;grid-template-columns:1fr auto;gap:4px 10px;align-items:center;margin-top:10px}
-.api-row span{font-weight:600}
-.api-row small{color:var(--ink-soft)}
-.api-row select{grid-column:1/-1}
-.api-key{font-family:ui-monospace,Menlo,monospace;letter-spacing:.5px}
 </style>
 </head>
 <body>
@@ -2882,7 +2863,6 @@ function renderLineupTab(){
      '<span class="lbl-s" style="margin-top:12px;display:block">מסגרת</span><div class="comp-pick">'+
      Object.entries(COMPS).map(([ck,c])=>'<button class="comp-opt'+(d.comp===ck?" on":"")+'" data-c="'+ck+'">'+(COMP_EMBLEM[ck]?'<img class="comp-em" alt="" src="'+COMP_EMBLEM[ck]+'">':c.svg)+'<span>'+esc(c.name)+'</span></button>').join("")+
      '</div><p class="lbl-s" style="margin:10px 0 0">התאריך שיישמר הוא '+esc(fmtDay(todayStr()))+'.</p></div>';
-  h=h.replace('<div class="card"><h3>המשחק</h3>',apiCardHtml(d)+'<div class="card"><h3>המשחק</h3>');
 
   const filled=slots.filter(s=>d.lineup[s.k]).length;
   h+='<div class="card"><h3>הרכב פותח <span style="font-weight:400;font-size:14px;color:var(--ink-soft)">('+filled+'/11)</span></h3>'+
@@ -2899,7 +2879,6 @@ function renderLineupTab(){
   h+='<div id="statusCards">'+statusCardsHtml(d,taken)+'</div>';
   h+='<div class="op-foot"><button class="btn gold" id="launch" style="flex:1;font-size:18px;padding:14px">הפעל משחק</button>'+(g?'<button class="btn danger" id="endGame">סיים משחק</button>':'')+'</div><div class="err" id="opErr"></div>';
   $("#opBody").innerHTML=h;
-  bindApiCard(d);
 
   const oppHint=()=>{ const el=$("#oppHint"); if(!el)return; const c=teamCrest(d.opp);
     el.innerHTML=!d.opp.trim()?'':c?'<img alt="" src="'+c+'"><span>הסמל נמצא</span>':'<span>אין עדיין סמל לקבוצה הזו. המשחק יוצג בלי סמל.</span>'; };
@@ -2929,202 +2908,6 @@ function renderLineupTab(){
   const eg=$("#endGame"); if(eg){let a2=false;eg.onclick=()=>{if(!a2){a2=true;eg.textContent="בטוח? לחץ שוב";return;}setGame(null);sdel(K.prog);sdel(K.draft);renderLineupTab();toast("המשחק הסתיים");};}
 }
 
-/* ===== Line-up pull (API-Football). The key is kept only on this device. ===== */
-const APIF_K="fcb_apif_key", APIF_MAP="fcb_apif_map", API_BASE="https://v3.football.api-sports.io/", BARCA_API=529;
-const EN_NAMES={p1:["Joan Garcia"],p2:["Wojciech Szczesny"],p3:["Dominik Livakovic"],p4:["Joao Cancelo"],p5:["Alejandro Balde","Alex Balde"],
- p6:["Pau Cubarsi"],p7:["Xavi Espart"],p8:["Andreas Christensen"],p9:["Gerard Martin"],p10:["Jules Kounde"],p11:["Eric Garcia"],
- p12:["Brian Farinas"],p13:["Gavi","Pablo Gavira","Pablo Martin Paez Gavira"],p28:["Pedri","Pedro Gonzalez Lopez"],p14:["Fermin Lopez","Fermin"],
- p15:["Rodri Hernandez","Rodrigo Hernandez"],p16:["Dani Olmo","Daniel Olmo"],p17:["Frenkie de Jong"],p18:["Marc Bernal"],p19:["Gabriel Jesus"],
- p20:["Hamza Abdelkarim"],p21:["Lamine Yamal"],p22:["Raphinha","Raphael Dias Belloli"],p23:["Karim Adeyemi"],p24:["Anthony Gordon"],
- p25:["Roony Bardghji"],p26:["Jesse Bisiwu"]};
-const EN_TEAMS={"athletic club":"אתלטיק בילבאו","atletico madrid":"אתלטיקו מדריד","osasuna":"אוססונה","celta vigo":"סלטה ויגו",
- "deportivo la coruna":"דפורטיבו לה קורוניה","alaves":"אלאבס","elche":"אלצ'ה","getafe":"חטאפה","levante":"לבאנטה","malaga":"מלאגה",
- "espanyol":"אספניול","racing santander":"ראסינג סנטנדר","rayo vallecano":"ראיו וייקאנו","real betis":"בטיס","real madrid":"ריאל מדריד",
- "real sociedad":"ריאל סוסיאדד","sevilla":"סביליה","valencia":"ולנסיה","villarreal":"ויאריאל","girona":"ג'ירונה","mallorca":"מיורקה",
- "las palmas":"לאס פלמאס","valladolid":"ויאדוליד","leganes":"לגאנס","oviedo":"אוביידו","real oviedo":"אוביידו",
- "bayern munich":"באיירן מינכן","bayern munchen":"באיירן מינכן","paris saint germain":"פאריס סן ז'רמן","inter":"אינטר","ac milan":"מילאן",
- "juventus":"יובנטוס","napoli":"נאפולי","atalanta":"אטאלנטה","manchester city":"מנצ'סטר סיטי","liverpool":"ליברפול","arsenal":"ארסנל",
- "chelsea":"צ'לסי","tottenham":"טוטנהאם","newcastle":"ניוקאסל","manchester united":"מנצ'סטר יונייטד","borussia dortmund":"בורוסיה דורטמונד",
- "bayer leverkusen":"באייר לברקוזן","eintracht frankfurt":"איינטרכט פרנקפורט","benfica":"בנפיקה","porto":"פורטו","sporting cp":"ספורטינג ליסבון",
- "ajax":"אייאקס","psv eindhoven":"פ.ס.וו איינדהובן","feyenoord":"פיינורד","monaco":"מונאקו","marseille":"מארסיי","club brugge kv":"קלאב ברוז'",
- "galatasaray":"גלאטסראיי","olympiakos piraeus":"אולימפיאקוס","celtic":"סלטיק","fc copenhagen":"קופנהגן","slavia praha":"סלביה פראג"};
-const COMP_API={140:"laliga",2:"ucl",143:"cup",556:"cup"};
-function apifKey(){ return (sget(APIF_K)||"").trim(); }
-function enNorm(s){ return String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[łŁ]/g,"l").replace(/ø/g,"o").replace(/ß/g,"ss")
-  .toLowerCase().replace(/[^a-z0-9. ]/g," ").replace(/\s+/g," ").trim(); }
-async function apif(path){
-  const key=apifKey(); if(!key){ const e=new Error("nokey"); e.msg="אין מפתח. מזינים אותו בלשונית סגל."; throw e; }
-  let res;
-  try{ res=await fetch(API_BASE+path,{headers:{"x-apisports-key":key}}); }
-  catch(_){ const e=new Error("net"); e.msg="אין חיבור לשרת של API-Football. בדוק את האינטרנט ונסה שוב."; throw e; }
-  if(!res.ok){ const e=new Error("http"); e.msg="השרת החזיר שגיאה ("+res.status+")."; throw e; }
-  const j=await res.json();
-  const errs=j.errors?(Array.isArray(j.errors)?j.errors:Object.values(j.errors)):[];
-  if(errs.length){ const e=new Error("api"); const t=errs.join(" ");
-    e.msg=/token|key|application/i.test(t)?"המפתח לא תקין. בדוק אותו בלשונית סגל.":/request limit|requests/i.test(t)?"נגמרו 100 הבקשות של היום. מחר זה מתאפס.":/plan|season/i.test(t)?"התוכנית החינמית לא נותנת גישה לנתון הזה: "+t:"שגיאה מ-API-Football: "+t;
-    throw e; }
-  return j.response;
-}
-function matchApiPlayer(ap){
-  const map=jget(APIF_MAP,{})||{}, aid=String(ap.id||ap.name||"");
-  if(map[aid]&&byId(map[aid])) return map[aid];
-  const n=enNorm(ap.name); if(!n) return null;
-  const toks=n.split(" ").filter(Boolean);
-  const init=toks.length>1&&/^[a-z]\.$/.test(toks[0])?toks[0][0]:null;
-  const rest=(init?toks.slice(1):toks).map(t=>t.replace(/\./g,"")).filter(Boolean);
-  let best=null,bs=0,tie=false;
-  squad.forEach(p=>{
-    const forms=(EN_NAMES[p.id]||[]).concat(p.en?[p.en]:[]); let ps=0;
-    forms.forEach(f=>{ const ft=enNorm(f).split(" "); let s=0;
-      const suffix=rest.length<=ft.length&&rest.every((t,i)=>ft[ft.length-rest.length+i]===t);
-      if(init){ if(suffix&&ft[0][0]===init) s=4; else if(suffix) s=1; }
-      else if(rest.join(" ")===ft.join(" ")) s=5;
-      else if(rest.every(t=>ft.includes(t))) s=2+rest.length*.1;
-      if(s>ps) ps=s; });
-    if(ps>bs){ bs=ps; best=p.id; tie=false; } else if(ps>0&&ps===bs) tie=true;
-  });
-  return bs>0&&!tie?best:null;
-}
-function hungarian(a){
-  const n=a.length, m=a[0].length, INF=1e18;
-  const u=Array(n+1).fill(0), v=Array(m+1).fill(0), p=Array(m+1).fill(0), way=Array(m+1).fill(0);
-  for(let i=1;i<=n;i++){ p[0]=i; let j0=0; const minv=Array(m+1).fill(INF), used=Array(m+1).fill(false);
-    do{ used[j0]=true; const i0=p[j0]; let delta=INF, j1=0;
-      for(let j=1;j<=m;j++) if(!used[j]){ const cur=a[i0-1][j-1]-u[i0]-v[j]; if(cur<minv[j]){minv[j]=cur;way[j]=j0;} if(minv[j]<delta){delta=minv[j];j1=j;} }
-      for(let j=0;j<=m;j++){ if(used[j]){u[p[j]]+=delta;v[j]-=delta;} else minv[j]-=delta; }
-      j0=j1; }while(p[j0]!==0);
-    do{ const j1=way[j0]; p[j0]=p[j1]; j0=j1; }while(j0);
-  }
-  const r=Array(n).fill(-1); for(let j=1;j<=m;j++) if(p[j]) r[p[j]-1]=j-1; return r;
-}
-/* Place the API's eleven on our 4-3-3: every player gets a point on the pitch from his row/column, then the cheapest match to the slots. */
-function apiPlace(start,flip){
-  const slots=slotsOf("433"), os=slots.filter(s=>s.k!=="gk");
-  const ROWP={G:1,D:2,M:3,F:4}; const seen={};
-  const cells=start.map(s=>{ let r,c; const g=String(s.grid||"").split(":").map(Number);
-    if(g.length===2&&g[0]>0&&g[1]>0){ r=g[0]; c=g[1]; } else { r=ROWP[s.pos]||3; seen[r]=(seen[r]||0)+1; c=seen[r]; }
-    return {s,r,c}; });
-  const gkCell=cells.find(x=>x.r===1)||cells.find(x=>x.s.pos==="G");
-  const out=cells.filter(x=>x!==gkCell);
-  const rows=[...new Set(out.map(x=>x.r))].sort((a,b)=>a-b);
-  const pts=[];
-  rows.forEach((r,i)=>{ const row=out.filter(x=>x.r===r).sort((a,b)=>a.c-b.c), n=row.length, sp=n>1?Math.min(37,74/(n-1)):0;
-    row.forEach((o,j)=>{ let x=50+(j-(n-1)/2)*sp; if(flip) x=100-x; pts.push({s:o.s,x,y:rows.length>1?74-i/(rows.length-1)*61:45}); }); });
-  const res={}; if(gkCell) res.gk=String(gkCell.s.id||gkCell.s.name);
-  if(pts.length){ const cost=pts.map(p=>os.map(s=>(p.x-s.x)**2+(1.3*(p.y-s.y))**2)); const asg=hungarian(cost);
-    asg.forEach((j,i)=>{ if(j>=0&&os[j]) res[os[j].k]=String(pts[i].s.id||pts[i].s.name); }); }
-  return res;
-}
-const SIDE_R=["rb","rcb","rcm","rw"], SIDE_L=["lb","lcb","lcm","lw"];
-function sideScore(place,pidOf){ let s=0;
-  Object.entries(place).forEach(([k,aid])=>{ const pl=byId(pidOf[aid]); if(!pl||!pl.pos2) return;
-    const right=/ימני/.test(pl.pos2), left=/שמאלי/.test(pl.pos2);
-    if(SIDE_R.includes(k)) s+=right?1:left?-1:0; if(SIDE_L.includes(k)) s+=left?1:right?-1:0; });
-  return s; }
-function israelDay(offset){ const d=new Date(Date.now()+(offset||0)*864e5);
-  try{ return new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Jerusalem",year:"numeric",month:"2-digit",day:"2-digit"}).format(d); }
-  catch(_){ return d.toISOString().slice(0,10); } }
-function hhmm(iso){ try{ return new Date(iso).toLocaleTimeString("he-IL",{hour:"2-digit",minute:"2-digit",timeZone:"Asia/Jerusalem"}); }catch(_){ return ""; } }
-async function apiPull(){
-  let fx=await apif("fixtures?team="+BARCA_API+"&date="+israelDay(0)+"&timezone=Asia/Jerusalem");
-  if(!fx||!fx.length) fx=await apif("fixtures?team="+BARCA_API+"&date="+israelDay(1)+"&timezone=Asia/Jerusalem");
-  if(!fx||!fx.length){ const e=new Error("nofix"); e.msg="לא מצאתי משחק של ברסה היום או מחר."; throw e; }
-  const F=fx[0], fid=F.fixture.id, opp=F.teams.home.id===BARCA_API?F.teams.away:F.teams.home;
-  const A={fid,kick:F.fixture.date,oppEn:opp.name,opp:EN_TEAMS[enNorm(opp.name)]||opp.name,comp:COMP_API[F.league&&F.league.id]||null,
-    formation:"",slots:{},names:{},pid:{},role:{},bench:[],inj:[],ready:false,at:Date.now()};
-  const lu=await apif("fixtures/lineups?fixture="+fid+"&team="+BARCA_API);
-  const L=(lu||[]).find(x=>x.team&&x.team.id===BARCA_API)||(lu||[])[0];
-  if(!L||!L.startXI||L.startXI.length<11) return A;
-  A.ready=true; A.formation=L.formation||"";
-  const start=L.startXI.map(x=>x.player), subs=(L.substitutes||[]).map(x=>x.player);
-  [...start,...subs].forEach(p=>{ const aid=String(p.id||p.name); A.names[aid]=p.name; A.pid[aid]=matchApiPlayer(p); });
-  start.forEach(p=>A.role[String(p.id||p.name)]="xi"); subs.forEach(p=>A.role[String(p.id||p.name)]="bench");
-  const p0=apiPlace(start,false), p1=apiPlace(start,true);
-  A.slots=sideScore(p1,A.pid)>sideScore(p0,A.pid)?p1:p0;
-  A.bench=subs.map(p=>String(p.id||p.name));
-  try{ const inj=await apif("injuries?fixture="+fid+"&team="+BARCA_API)||[];
-    inj.forEach(x=>{ const p=x.player||{}; if(p.type&&!/missing/i.test(p.type)) return; const aid=String(p.id||p.name);
-      if(A.role[aid]) return; A.names[aid]=p.name; A.pid[aid]=matchApiPlayer(p); A.role[aid]="inj"; if(!A.inj.includes(aid)) A.inj.push(aid); });
-  }catch(_){ A.injErr=true; }
-  return A;
-}
-function applyApi(d,A){
-  if(A.opp) d.opp=A.opp; if(A.comp) d.comp=A.comp;
-  if(!A.ready) return;
-  d.formation="433"; d.lineup={};
-  Object.entries(A.slots).forEach(([k,aid])=>{ const pid=A.pid[aid]; if(pid&&!Object.values(d.lineup).includes(pid)) d.lineup[k]=pid; });
-  const inXI=new Set(Object.values(d.lineup));
-  d.bench=[...new Set(A.bench.map(a=>A.pid[a]).filter(p=>p&&!inXI.has(p)))];
-  d.injured=[...new Set(A.inj.map(a=>A.pid[a]).filter(p=>p&&!inXI.has(p)&&!d.bench.includes(p)))];
-  d.outOff=[]; d._st=1;
-}
-function apiCardHtml(d){
-  const k=apifKey(); const A=d.api;
-  let h='<div class="card api-card"><h3>משיכת הרכב</h3>';
-  if(!k) return h+'<p class="st-help">כדי למשוך את ההרכב אוטומטית צריך מפתח API-Football. מזינים אותו פעם אחת בלשונית "סגל".</p><button class="btn ghost" id="apiGoKey">להזנת המפתח</button></div>';
-  h+='<p class="st-help">ממלא את היריבה, המסגרת, ההרכב, הספסל והפצועים מהמשחק של ברסה היום. אחר כך בודקים ולוחצים "הפעל משחק".</p>'+
-     '<button class="btn gold api-pull" id="apiPull"><span>משוך הרכב</span></button><div class="api-out" id="apiOut">';
-  if(A){
-    const when=hhmm(A.kick);
-    if(!A.ready) h+='<div class="api-note wait">נמצא המשחק נגד '+esc(A.opp)+(when?' ב-'+when:'')+', אבל ההרכב עוד לא פורסם. נסה שוב קרוב לשריקה. בינתיים מילאתי את היריבה והמסגרת.</div>';
-    else{
-      const xi=Object.values(A.slots).filter(a=>A.pid[a]).length+0, slotsN=Object.keys(A.slots).length;
-      const benchN=A.bench.filter(a=>A.pid[a]).length, injN=A.inj.filter(a=>A.pid[a]).length;
-      h+='<div class="api-note ok"><b>נגד '+esc(A.opp)+(when?', '+when:'')+'</b><br>שובצו '+xi+' מתוך '+slotsN+' בהרכב, '+benchN+' בספסל, '+(injN===1?'פצוע אחד':injN+' פצועים')+'.'+
-        (A.formation&&A.formation!=="4-3-3"?'<br>פליק עלה היום ב-<bdi dir="ltr">'+esc(A.formation)+'</bdi>. שיבצתי לפי המיקום על המגרש, אז בדוק במיוחד את הקישור ואת הצדדים.':'<br>בדוק שהעמדות נכונות לפני ההפעלה.')+
-        (A.injErr?'<br>את רשימת הפצועים לא הצלחתי למשוך. סמן אותם ידנית.':'')+'</div>';
-      const un=Object.keys(A.role).filter(a=>(A.role[a]==="xi"||A.role[a]==="bench")&&!A.pid[a]);
-      if(un.length){
-        const used=new Set(Object.values(A.pid).filter(Boolean));
-        h+='<div class="api-un"><b>לא זיהיתי '+un.length+' שחקנים. בחר מי זה, וזה ייזכר לפעם הבאה:</b>'+un.map(a=>{
-          const slotK=Object.keys(A.slots).find(k=>A.slots[k]===a); const where=A.role[a]==="bench"?"ספסל":(slotK?labelOf({formation:"433"},slotK):"הרכב");
-          return '<label class="api-row"><span dir="ltr">'+esc(A.names[a]||a)+'</span><small>'+esc(where)+'</small><select class="inp" data-apimap="'+esc(a)+'"><option value="">בחר שחקן</option>'+
-            squad.filter(p=>!used.has(p.id)).map(p=>'<option value="'+p.id+'">'+esc(fullName(p))+'</option>').join("")+'<option value="-">לא בסגל שלי</option></select></label>'; }).join("")+'</div>';
-      }
-    }
-  }
-  return h+'</div></div>';
-}
-function bindApiCard(d){
-  const go=document.getElementById("apiGoKey");
-  if(go) go.onclick=()=>{ const t=document.querySelector('[data-tab="squad"]'); if(t) t.click(); setTimeout(()=>{ const c=document.getElementById("apiKey"); if(c){ c.scrollIntoView({block:"center"}); c.focus(); } },60); };
-  const b=document.getElementById("apiPull");
-  if(b) b.onclick=async()=>{
-    if(b.classList.contains("busy")) return;
-    b.classList.add("busy"); b.querySelector("span").textContent="מושך…"; $("#opErr").textContent="";
-    try{
-      const A=await apiPull(); const dd=fixDraft(getDraft()); dd.api=A; applyApi(dd,A); saveDraft(dd); renderLineupTab();
-      toast(A.ready?"ההרכב נמשך. בדוק והפעל":"ההרכב עוד לא פורסם");
-      const o=document.getElementById("apiOut"); if(o) o.scrollIntoView({block:"nearest"});
-    }catch(e){
-      b.classList.remove("busy"); b.querySelector("span").textContent="משוך הרכב";
-      const o=document.getElementById("apiOut"); if(o) o.innerHTML='<div class="api-note bad">'+esc(e.msg||"משהו השתבש. נסה שוב.")+'</div>';
-    }
-  };
-  document.querySelectorAll("[data-apimap]").forEach(s=>s.onchange=()=>{
-    const aid=s.dataset.apimap, v=s.value; if(!v) return; const dd=fixDraft(getDraft()); if(!dd.api) return;
-    dd.api.pid[aid]=v==="-"?null:v;
-    if(v!=="-"){ const m=jget(APIF_MAP,{})||{}; m[aid]=v; jset(APIF_MAP,m); }
-    else dd.api.role[aid]="skip";
-    applyApi(dd,dd.api); saveDraft(dd); renderLineupTab();
-  });
-}
-function apiKeyCard(){
-  const k=apifKey();
-  return '<div class="card"><h3>מפתח API-Football</h3><p class="sub-s" style="margin:-4px 0 10px">למשיכת ההרכב האוטומטית. נשמר רק במכשיר הזה, לא בקובץ.</p>'+
-    '<label style="display:block"><span class="lbl-s">מפתח</span><input class="inp api-key" id="apiKey" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" dir="ltr" value="'+esc(k)+'" placeholder="מדביקים כאן"></label>'+
-    '<p class="st-help" style="margin:8px 0 0">משיגים אותו בחינם ב-dashboard.api-football.com, בתפריט Account ואז My Access.</p>'+
-    '<div class="op-foot" style="margin-top:12px"><button class="btn gold" id="apiKeySave" style="flex:1">שמירה</button><button class="btn ghost" id="apiKeyTest">בדיקה</button>'+(k?'<button class="btn ghost" id="apiKeyDel">מחיקה</button>':'')+'</div><div class="api-out" id="apiKeyMsg"></div></div>';
-}
-function bindApiKey(){
-  const msg=(t,cls)=>{ const m=document.getElementById("apiKeyMsg"); if(m) m.innerHTML='<div class="api-note '+cls+'">'+esc(t)+'</div>'; };
-  $("#apiKeySave").onclick=()=>{ const v=$("#apiKey").value.trim(); if(!v){ msg("המפתח ריק.","bad"); return; } sset(APIF_K,v); toast("המפתח נשמר"); renderSquadTab(); };
-  $("#apiKeyTest").onclick=async()=>{ const v=$("#apiKey").value.trim(); if(v) sset(APIF_K,v); msg("בודק…","wait");
-    try{ const s=await apif("status"); const r=s&&s.requests;
-      msg("המפתח תקין."+(r?" נוצלו היום "+r.current+" מתוך "+r.limit_day+" בקשות.":""),"ok"); }
-    catch(e){ msg(e.msg||"הבדיקה נכשלה.","bad"); } };
-  const del=document.getElementById("apiKeyDel"); if(del){ let a=false; del.onclick=()=>{ if(!a){ a=true; del.textContent="לחץ שוב"; return; } sdel(APIF_K); renderSquadTab(); toast("המפתח נמחק"); }; }
-}
 function statusCardsHtml(d,taken){
   const injPool=squad.filter(p=>!taken.has(p.id)&&!d.bench.includes(p.id));
   const outPool=injPool.filter(p=>!d.injured.includes(p.id));
@@ -3193,11 +2976,11 @@ function bindAsst(){
   $("#asSave").onclick=()=>{const name=$("#asName").value.trim(); if(name||photo)jset(ASST_K,{name,photo}); else sdel(ASST_K); renderAsst(); toast("נשמר");};
 }
 function renderSquadTab(){
-  let h=asstCard()+apiKeyCard()+'<div class="op-foot" style="margin-bottom:14px"><button class="btn gold" id="addPl">הוספת שחקן</button><button class="btn ghost" id="resetSq">שחזור הסגל המקורי</button></div>';
+  let h=asstCard()+'<div class="op-foot" style="margin-bottom:14px"><button class="btn gold" id="addPl">הוספת שחקן</button><button class="btn ghost" id="resetSq">שחזור הסגל המקורי</button></div>';
   POS.forEach(pos=>{const ps=squad.filter(p=>p.pos===pos); if(!ps.length)return;
     h+='<div class="card"><h3>'+pos+'</h3>'+ps.map(p=>'<div class="pl-row">'+(photoOf(p.id)?'<img class="thumb" alt="" src="'+photoOf(p.id)+'">':'<span class="thumb"></span>')+'<div class="n"><b>'+esc(fullName(p))+'</b><small>'+esc(natPos(p))+' | '+esc(p.nat||"")+' | '+esc((p.accept||[]).join(", "))+'</small></div><button class="btn ghost sm" data-edit="'+p.id+'">עריכה</button></div>').join("")+'</div>';});
   $("#opBody").innerHTML=h;
-  bindAsst(); bindApiKey();
+  bindAsst();
   $("#addPl").onclick=()=>editPlayer(null);
   let a=false; $("#resetSq").onclick=e=>{if(!a){a=true;e.target.textContent="לחץ שוב לשחזור";return;} squad=JSON.parse(JSON.stringify(DEFAULT_SQUAD));saveSquad();renderSquadTab();toast("הסגל שוחזר");};
   document.querySelectorAll("[data-edit]").forEach(b=>b.onclick=()=>editPlayer(b.dataset.edit));
@@ -3212,7 +2995,6 @@ function editPlayer(id){
    '<label><span class="lbl-s">עמדה מדויקת (לרמזים)</span><input class="inp" id="ep2" value="'+esc(p.pos2||"")+'" placeholder="למשל קיצוני שמאלי"></label></div>'+
    '<label style="display:block;margin-top:10px"><span class="lbl-s">מתקבל ישירות (מופרד בפסיקים)</span><input class="inp" id="ea" value="'+esc((p.accept||[]).join(", "))+'" placeholder="ריק = שם משפחה ושם מלא"></label>'+
    '<label style="display:block;margin-top:10px"><span class="lbl-s">שואל "האם התכוונת" (מופרד בפסיקים)</span><input class="inp" id="eq" value="'+esc((p.ask||[]).join(", "))+'"></label>'+
-   '<label style="display:block;margin-top:10px"><span class="lbl-s">שם באנגלית, למשיכת ההרכב (לא חובה)</span><input class="inp" id="eeng" dir="ltr" value="'+esc(p.en||(EN_NAMES[p.id]||[])[0]||"")+'" placeholder="Lamine Yamal"></label>'+
    '<label style="display:block;margin-top:10px"><span class="lbl-s">הערה לרמז "מידע על שחקן" (לא חובה)</span><input class="inp" id="enote" value="'+esc(p.note||NOTES[p.id]||"")+'"></label>'+
    '<div class="photo-edit"><span id="ephWrap">'+(photoOf(p.id)?'<img class="thumb" alt="" src="'+photoOf(p.id)+'">':'<span class="thumb"></span>')+'</span><label class="btn ghost sm" style="cursor:pointer">העלאת תמונה<input type="file" accept="image/*" id="ephoto" hidden></label><button class="btn ghost sm" id="ephDel">הסרת תמונה</button></div>'+
    '<div class="op-foot" style="margin-top:16px"><button class="btn gold" id="esave" style="flex:1">שמירה</button>'+(id?'<button class="btn danger" id="edel">הסרה מהסגל</button>':'')+'</div><div class="err" id="eerr"></div>');
@@ -3230,7 +3012,7 @@ function editPlayer(id){
     const first=$("#ef").value.trim(), last=$("#el").value.trim();
     if(!last){$("#eerr").textContent="חסר שם משפחה או כינוי";return;}
     let accept=list($("#ea").value); if(!accept.length)accept=first?[last,first+" "+last]:[last];
-    const np={id:id||("u"+Date.now()),first,last,pos:$("#ep").value,nat:$("#en").value.trim(),accept,ask:list($("#eq").value),pos2:$("#ep2").value.trim(),note:$("#enote").value.trim(),en:$("#eeng").value.trim()};
+    const np={id:id||("u"+Date.now()),first,last,pos:$("#ep").value,nat:$("#en").value.trim(),accept,ask:list($("#eq").value),pos2:$("#ep2").value.trim(),note:$("#enote").value.trim()};
     if(id)squad[squad.findIndex(x=>x.id===id)]=np; else squad.push(np);
     if(newPhoto!==undefined){customPhotos[np.id]=newPhoto;savePhotos();}
     saveSquad(); closeSheet(); renderSquadTab(); toast("נשמר");
@@ -3246,6 +3028,7 @@ function renderAsst(){
   row.hidden=false; document.getElementById("asstName").textContent=a.name;
   const im=document.getElementById("asstImg"); if(a.photo){im.src=a.photo;im.hidden=false;} else {im.removeAttribute("src");im.hidden=true;}
 }
+try{ localStorage.removeItem("fcb_apif_key"); localStorage.removeItem("fcb_apif_map"); }catch(e){}   // the line-up pull was removed: drop its stored key
 renderAsst();
 renderHome(); homeIn();
 })();
