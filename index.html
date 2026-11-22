@@ -1056,6 +1056,16 @@ body.cam-on .backdrop{background:rgba(5,10,30,.3)}
 .tk-prog{margin-top:12px;padding-top:11px;border-top:1px dashed rgba(255,255,255,.18)}
 .tk-prog span{display:block;font-size:12.5px;color:#c9d1ea;margin-bottom:7px}
 .tk-prog .pips{margin:0 auto;max-width:240px}
+
+/* ===== pass 32: formations ===== */
+.form-pick{display:flex;flex-wrap:wrap;gap:8px}
+.form-opt{flex:1 1 0;min-width:72px;padding:10px 6px;border-radius:12px;border:1.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.05);color:inherit;
+  font:700 16px/1 var(--f-body,inherit);letter-spacing:.5px}
+.form-opt.on{background:var(--gold);border-color:var(--gold);color:#1a1300}
+.st-form{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 14px;border-radius:999px;background:rgba(6,13,41,.6);border:1px solid rgba(237,187,0,.45)}
+.st-form[hidden]{display:none}
+.st-form small{font-size:10.5px;color:#9fb0d8;line-height:1.1}
+.st-form b{font-family:var(--f-display);font-size:22px;line-height:1;color:var(--gold);letter-spacing:.5px}
 </style>
 </head>
 <body>
@@ -1086,6 +1096,7 @@ body.cam-on .backdrop{background:rgba(5,10,30,.3)}
   <div class="match-bug" id="matchBug"></div>
   <div class="staff">
     <div class="st-row"><img alt="" src="assets/img/8437ba2295.webp"><div><small>מאמן</small><b>האנזי פליק</b></div></div>
+    <div class="st-form" id="formChip" aria-label="המערך"></div>
     <div class="st-row" id="asstRow" hidden><img alt="" id="asstImg"><div><small>עוזרת מאמן</small><b id="asstName"></b></div></div>
   </div>
   <div class="place-bar" id="placeBar" hidden></div>
@@ -1114,7 +1125,7 @@ body.cam-on .backdrop{background:rgba(5,10,30,.3)}
 
 <h2>מנחשים</h2>
 <p>בלחיצה על "את המאמנת היום" השופט שורק לפתיחה, ספירה לאחור מחמש, ונכנסים למגרש.</p>
-<p>המגרש תמיד בנוי 4-3-3: שוער, ארבעה בהגנה, שלושה בקישור ושלושה בהתקפה. לוחצים על עמדה, כותבים את שם השחקן במקלדת ולוחצים "בדיקה". אפשר לעבור בין עמדות בכל סדר, לצאת מעמדה ולחזור אליה, ולנסות כמה פעמים שבא לך.</p>
+<p>המגרש בנוי לפי המערך שפליק בחר למשחק, למשל 4-3-3, 4-2-3-1 או 4-4-2. המערך כתוב מעל המגרש, כך שיודעים מראש כמה שחקנים יש בכל קו. לוחצים על עמדה, כותבים את שם השחקן במקלדת ולוחצים "בדיקה". אפשר לעבור בין עמדות בכל סדר, לצאת מעמדה ולחזור אליה, ולנסות כמה פעמים שבא לך.</p>
 <p>אפשר לרשום שם מלא, שם פרטי, שם משפחה, או השם שנהוג לקרוא לשחקן. אם השם נכתב באופן לא מדויק, המערכת תדע להציע לך את השחקן הנכון.</p>
 
 <h2>מה התשובות אומרות</h2>
@@ -1215,8 +1226,31 @@ const FORMATIONS = {
   ["gk","שוער","gk",50,89],
   ["lb","מגן שמאלי","def",13,69],["lcb","בלם שמאלי","def",37,74],["rcb","בלם ימני","def",63,74],["rb","מגן ימני","def",87,69],
   ["lcm","קשר שמאלי","mid",21,49],["cam","קשר מרכזי","mid",50,45],["rcm","קשר ימני","mid",79,49],
-  ["lw","קיצוני שמאלי","att",15,21],["st","חלוץ","att",50,13],["rw","קיצוני ימני","att",85,21]]}
+  ["lw","קיצוני שמאלי","att",15,21],["st","חלוץ","att",50,13],["rw","קיצוני ימני","att",85,21]]},
+ "4231":{name:"4-2-3-1", slots:[
+  ["gk","שוער","gk",50,89],
+  ["lb","מגן שמאלי","def",13,69],["lcb","בלם שמאלי","def",37,74],["rcb","בלם ימני","def",63,74],["rb","מגן ימני","def",87,69],
+  ["ldm","קשר אחורי שמאלי","mid",33,55],["rdm","קשר אחורי ימני","mid",67,55],
+  ["lw","קיצוני שמאלי","att",14,31],["cam","קשר התקפי","att",50,34],["rw","קיצוני ימני","att",86,31],
+  ["st","חלוץ","att",50,13]]},
+ "442":{name:"4-4-2", slots:[
+  ["gk","שוער","gk",50,89],
+  ["lb","מגן שמאלי","def",13,69],["lcb","בלם שמאלי","def",37,74],["rcb","בלם ימני","def",63,74],["rb","מגן ימני","def",87,69],
+  ["lm","כנף שמאל","mid",13,40],["lcm","קשר שמאלי","mid",37,51],["rcm","קשר ימני","mid",63,51],["rm","כנף ימין","mid",87,40],
+  ["ls","חלוץ שמאלי","att",35,16],["rs","חלוץ ימני","att",65,16]]},
+ "4141":{name:"4-1-4-1", slots:[
+  ["gk","שוער","gk",50,89],
+  ["lb","מגן שמאלי","def",13,69],["lcb","בלם שמאלי","def",37,74],["rcb","בלם ימני","def",63,74],["rb","מגן ימני","def",87,69],
+  ["dm","קשר אחורי","mid",50,57],
+  ["lm","כנף שמאל","mid",13,31],["lcm","קשר שמאלי","mid",35,41],["rcm","קשר ימני","mid",65,41],["rm","כנף ימין","mid",87,31],
+  ["st","חלוץ","att",50,13]]},
+ "352":{name:"3-5-2", slots:[
+  ["gk","שוער","gk",50,89],
+  ["lcb","בלם שמאלי","def",25,73],["cb","בלם מרכזי","def",50,75],["rcb","בלם ימני","def",75,73],
+  ["lwb","מגן כנף שמאלי","mid",11,55],["lcm","קשר שמאלי","mid",31,39],["dm","קשר אחורי","mid",50,55],["rcm","קשר ימני","mid",69,39],["rwb","מגן כנף ימני","mid",89,55],
+  ["ls","חלוץ שמאלי","att",35,16],["rs","חלוץ ימני","att",65,16]]}
 };
+const FORM_ORDER=["433","4231","442","4141","352"];
 function slotsOf(f){return FORMATIONS[f].slots.map(s=>({k:s[0],label:s[1],line:s[2],x:s[3],y:s[4]}));}
 
 /* ===================== STORAGE ===================== */
@@ -1275,7 +1309,7 @@ function show(id){
   const go=()=>showNow(id);
   // music must start inside the tap itself (iOS), so it is not deferred into the transition callback
   if(id==="play") bgStart();
-  if(document.startViewTransition&&!reduceMotion){ try{ document.startViewTransition(go); return; }catch(e){} }
+  if(document.startViewTransition&&!reduceMotion){ try{ const vt=document.startViewTransition(go); ['ready','finished','updateCallbackDone'].forEach(k=>vt[k]&&vt[k].catch(()=>{})); return; }catch(e){} }
   go();
 }
 function homeIn(){
@@ -1686,7 +1720,7 @@ $("#startBtn").onclick=()=>{ if(!getGame())return; const p=jget(K.prog,null); co
 
 /* ===================== PLAY ===================== */
 let currentSlot=null; let PLACE=null;
-const SLOT_POS={gk:"שוער",lb:"מגן",rb:"מגן",lcb:"בלם",rcb:"בלם",lcm:"קשר",rcm:"קשר",cam:"קשר",lw:"קיצוני",rw:"קיצוני",st:"חלוץ"};
+const SLOT_POS={gk:"שוער",lb:"מגן",rb:"מגן",lcb:"בלם",rcb:"בלם",cb:"בלם",lwb:"מגן",rwb:"מגן",lcm:"קשר",rcm:"קשר",cam:"קשר",dm:"קשר",ldm:"קשר",rdm:"קשר",lm:"קיצוני",rm:"קיצוני",lw:"קיצוני",rw:"קיצוני",st:"חלוץ",ls:"חלוץ",rs:"חלוץ"};
 const NOTES={
  p10:"שימי לב: פליק אוהב להעביר אותו בין עמדות, אז הוא לא תמיד איפה שאת מצפה.",
  p11:"שימי לב: פליק אוהב להעביר אותו בין עמדות, אז הוא לא תמיד איפה שאת מצפה.",
@@ -2045,6 +2079,8 @@ function pitchTurf(){
   return TURF;
 }
 function slotPos(x,y){ const q=proj(.045+x/100*.91,.02+y/100*.965); return {l:(q[0]/PV.W*100).toFixed(2),t:(q[1]/PV.H*100).toFixed(2),s:(.84+.16*(q[2]-.74)/.26).toFixed(3)}; }
+function renderFormChip(g){ const c=document.getElementById("formChip"); if(!c) return;
+  const f=g&&FORMATIONS[g.formation]; c.innerHTML=f?'<small>מערך</small><b dir="ltr">'+f.name+'</b>':''; c.hidden=!f; }
 function renderPlay(){
   const g=getGame(); if(!g){show("home");return;}
   { const s=jget(LD_K,null); if(!s||s.id!==g.id){ Object.keys(LD_OPEN).forEach(x=>delete LD_OPEN[x]); saveLd(); } }
@@ -2054,6 +2090,7 @@ function renderPlay(){
     if(mb) mb.innerHTML='<div class="mb-side"><img alt="" src="'+LOGO+'"><b>ברצלונה</b></div><span class="mb-vs">נגד</span>'+
       '<div class="mb-side opp">'+(oc?'<img alt="" src="'+oc+'" onerror="this.remove()">':'')+'<b>'+esc(g.opp||"היריבה")+'</b></div>'; }
   const slots=slotsOf(g.formation); let done=0;
+  renderFormChip(g);
   let h=pitchTurf();
   slots.forEach(s=>{
     const st=p.slots[s.k]; if(st.done)done++;
@@ -2866,7 +2903,9 @@ function renderLineupTab(){
 
   const filled=slots.filter(s=>d.lineup[s.k]).length;
   h+='<div class="card"><h3>הרכב פותח <span style="font-weight:400;font-size:14px;color:var(--ink-soft)">('+filled+'/11)</span></h3>'+
-     '<p style="margin:0 0 12px;font-size:14px;color:var(--ink-soft)">לחץ על עמדה ובחר שחקן מהתמונות.</p>'+
+     '<span class="lbl-s" style="display:block;margin-bottom:6px">מערך</span><div class="form-pick">'+
+     FORM_ORDER.map(f=>'<button class="form-opt'+((d.formation||"433")===f?' on':'')+'" data-form="'+f+'" dir="ltr">'+FORMATIONS[f].name+'</button>').join("")+'</div>'+
+     '<p style="margin:12px 0 12px;font-size:14px;color:var(--ink-soft)">לחץ על עמדה ובחר שחקן מהתמונות.</p>'+
      '<div class="op-pitch">'+svgPitchLines()+
      slots.map(s=>{const pid=d.lineup[s.k]; const pl=pid?byId(pid):null; const ph=pl?photoOf(pl.id):null;
        return '<button class="opslot'+(pl?' on':'')+'" data-os="'+s.k+'" style="left:'+s.x+'%;top:'+s.y+'%">'+
@@ -2885,6 +2924,8 @@ function renderLineupTab(){
   $("#opp").oninput=e=>{d.opp=e.target.value;saveDraft(d);oppHint();}; oppHint();
   document.querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{d.comp=b.dataset.c;saveDraft(d);renderLineupTab()});
   document.querySelectorAll("[data-os]").forEach(b=>b.onclick=()=>opPicker(b.dataset.os));
+  document.querySelectorAll("[data-form]").forEach(b=>b.onclick=()=>{ const nf=b.dataset.form; if(nf===(d.formation||"433")) return;
+    d.lineup=remapLineup(d.lineup,d.formation||"433",nf); d.formation=nf; saveDraft(d); renderLineupTab(); });
   document.querySelectorAll("[data-b]").forEach(b=>b.onclick=()=>{const id=b.dataset.b;
     if(d.bench.includes(id)) d.bench=d.bench.filter(x=>x!==id); else { d.bench=[...d.bench,id]; d.injured=d.injured.filter(x=>x!==id); }
     saveDraft(d); b.classList.toggle("on");
@@ -2908,6 +2949,19 @@ function renderLineupTab(){
   const eg=$("#endGame"); if(eg){let a2=false;eg.onclick=()=>{if(!a2){a2=true;eg.textContent="בטוח? לחץ שוב";return;}setGame(null);sdel(K.prog);sdel(K.draft);renderLineupTab();toast("המשחק הסתיים");};}
 }
 
+/* Switching formation keeps everyone who has a place in the new one: same slot first, then the nearest slot of the same kind. */
+function remapLineup(lineup,from,to){
+  const A=slotsOf(from), B=slotsOf(to), out={}, left=[];
+  A.forEach(s=>{ const pid=lineup[s.k]; if(!pid) return; if(B.some(b=>b.k===s.k)) out[s.k]=pid; else left.push({s,pid}); });
+  const score=(o,b)=>{ const pl=byId(o.pid), cat=pl&&pl.pos;
+    return ((SLOT_POS[b.k]===SLOT_POS[o.s.k])?0:(cat&&SLOT_POS[b.k]===cat)?40:(b.line===o.s.line)?80:400)+Math.hypot(b.x-o.s.x,b.y-o.s.y); };
+  while(left.length){   // cheapest pair first, so a striker gets the striker slot before a winger does
+    let best=null;
+    left.forEach((o,i)=>B.forEach(b=>{ if(out[b.k]) return; const c=score(o,b); if(c<400&&(!best||c<best.c)) best={i,k:b.k,c}; }));
+    if(!best) break; out[best.k]=left[best.i].pid; left.splice(best.i,1);
+  }
+  return out;
+}
 function statusCardsHtml(d,taken){
   const injPool=squad.filter(p=>!taken.has(p.id)&&!d.bench.includes(p.id));
   const outPool=injPool.filter(p=>!d.injured.includes(p.id));
