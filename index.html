@@ -1066,6 +1066,16 @@ body.cam-on .backdrop{background:rgba(5,10,30,.3)}
 .st-form[hidden]{display:none}
 .st-form small{font-size:10.5px;color:#9fb0d8;line-height:1.1}
 .st-form b{font-family:var(--f-display);font-size:22px;line-height:1;color:var(--gold);letter-spacing:.5px}
+
+/* ===== pass 33: labels never collide ===== */
+.pitch .slot .nm{white-space:normal;max-width:86px;text-align:center;line-height:1.14;text-wrap:balance}
+.pitch .slot .lbl{white-space:nowrap}
+.xi-n{white-space:normal;max-width:68px;text-align:center;line-height:1.1;text-wrap:balance}
+.pitch{--dz:1}
+@media (max-width:370px),(max-height:790px){.pitch{--dz:.85}.xi-pitch .xi-f{width:calc(44px*var(--sc,1));height:calc(44px*var(--sc,1))}}
+#play .pitch .shirt{width:calc(56px*var(--sc,1)*var(--dz));height:calc(56px*var(--sc,1)*var(--dz))}
+#play .pitch .shirt .q{font-size:calc(34px*var(--sc,1)*var(--dz))}
+@media (max-width:400px){.pitch .slot .nm{max-width:72px;padding-left:7px;padding-right:7px}.pitch .slot .lbl{font-size:10.5px;padding:2px 6px}.xi-n{max-width:60px;font-size:11px}}
 </style>
 </head>
 <body>
@@ -1224,31 +1234,31 @@ const LINE_NOUN = {gk:"שוער", def:"הגנה", mid:"קישור", att:"התק�
 const FORMATIONS = {
  "433":{name:"4-3-3", slots:[
   ["gk","שוער","gk",50,89],
-  ["lb","מגן שמאלי","def",13,69],["lcb","בלם שמאלי","def",37,74],["rcb","בלם ימני","def",63,74],["rb","מגן ימני","def",87,69],
-  ["lcm","קשר שמאלי","mid",21,49],["cam","קשר מרכזי","mid",50,45],["rcm","קשר ימני","mid",79,49],
+  ["lb","מגן שמאלי","def",12,68],["lcb","בלם שמאלי","def",35.5,74],["rcb","בלם ימני","def",64.5,74],["rb","מגן ימני","def",88,68],
+  ["lcm","קשר שמאלי","mid",19,49],["cam","קשר מרכזי","mid",50,45],["rcm","קשר ימני","mid",81,49],
   ["lw","קיצוני שמאלי","att",15,21],["st","חלוץ","att",50,13],["rw","קיצוני ימני","att",85,21]]},
  "4231":{name:"4-2-3-1", slots:[
   ["gk","שוער","gk",50,89],
-  ["lb","מגן שמאלי","def",13,69],["lcb","בלם שמאלי","def",37,74],["rcb","בלם ימני","def",63,74],["rb","מגן ימני","def",87,69],
-  ["ldm","קשר אחורי שמאלי","mid",33,55],["rdm","קשר אחורי ימני","mid",67,55],
+  ["lb","מגן שמאלי","def",12,68],["lcb","בלם שמאלי","def",35.5,74],["rcb","בלם ימני","def",64.5,74],["rb","מגן ימני","def",88,68],
+  ["ldm","קשר אחורי שמאלי","mid",28,52],["rdm","קשר אחורי ימני","mid",72,52],
   ["lw","קיצוני שמאלי","att",14,31],["cam","קשר התקפי","att",50,34],["rw","קיצוני ימני","att",86,31],
   ["st","חלוץ","att",50,13]]},
  "442":{name:"4-4-2", slots:[
   ["gk","שוער","gk",50,89],
-  ["lb","מגן שמאלי","def",13,69],["lcb","בלם שמאלי","def",37,74],["rcb","בלם ימני","def",63,74],["rb","מגן ימני","def",87,69],
-  ["lm","כנף שמאל","mid",13,40],["lcm","קשר שמאלי","mid",37,51],["rcm","קשר ימני","mid",63,51],["rm","כנף ימין","mid",87,40],
-  ["ls","חלוץ שמאלי","att",35,16],["rs","חלוץ ימני","att",65,16]]},
+  ["lb","מגן שמאלי","def",12,68],["lcb","בלם שמאלי","def",35.5,74],["rcb","בלם ימני","def",64.5,74],["rb","מגן ימני","def",88,68],
+  ["lm","כנף שמאל","mid",12,34],["lcm","קשר שמאלי","mid",35,53],["rcm","קשר ימני","mid",65,53],["rm","כנף ימין","mid",88,34],
+  ["ls","חלוץ שמאלי","att",32,16],["rs","חלוץ ימני","att",68,16]]},
  "4141":{name:"4-1-4-1", slots:[
   ["gk","שוער","gk",50,89],
-  ["lb","מגן שמאלי","def",13,69],["lcb","בלם שמאלי","def",37,74],["rcb","בלם ימני","def",63,74],["rb","מגן ימני","def",87,69],
-  ["dm","קשר אחורי","mid",50,57],
-  ["lm","כנף שמאל","mid",13,31],["lcm","קשר שמאלי","mid",35,41],["rcm","קשר ימני","mid",65,41],["rm","כנף ימין","mid",87,31],
+  ["lb","מגן שמאלי","def",12,68],["lcb","בלם שמאלי","def",35.5,74],["rcb","בלם ימני","def",64.5,74],["rb","מגן ימני","def",88,68],
+  ["dm","קשר אחורי","mid",50,55],
+  ["lm","כנף שמאל","mid",12,20],["lcm","קשר שמאלי","mid",35,36],["rcm","קשר ימני","mid",65,36],["rm","כנף ימין","mid",88,20],
   ["st","חלוץ","att",50,13]]},
  "352":{name:"3-5-2", slots:[
   ["gk","שוער","gk",50,89],
-  ["lcb","בלם שמאלי","def",25,73],["cb","בלם מרכזי","def",50,75],["rcb","בלם ימני","def",75,73],
-  ["lwb","מגן כנף שמאלי","mid",11,55],["lcm","קשר שמאלי","mid",31,39],["dm","קשר אחורי","mid",50,55],["rcm","קשר ימני","mid",69,39],["rwb","מגן כנף ימני","mid",89,55],
-  ["ls","חלוץ שמאלי","att",35,16],["rs","חלוץ ימני","att",65,16]]}
+  ["lcb","בלם שמאלי","def",22,73],["cb","בלם מרכזי","def",50,74],["rcb","בלם ימני","def",78,73],
+  ["lwb","מגן כנף שמאלי","mid",10,53],["lcm","קשר שמאלי","mid",31,36],["dm","קשר אחורי","mid",50,57],["rcm","קשר ימני","mid",69,36],["rwb","מגן כנף ימני","mid",90,53],
+  ["ls","חלוץ שמאלי","att",32,16],["rs","חלוץ ימני","att",68,16]]}
 };
 const FORM_ORDER=["433","4231","442","4141","352"];
 function slotsOf(f){return FORMATIONS[f].slots.map(s=>({k:s[0],label:s[1],line:s[2],x:s[3],y:s[4]}));}
