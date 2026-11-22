@@ -1655,6 +1655,7 @@ function fullTime(){
 /* Opponent crests. To add a team: put a PNG in assets/teams/ and list the names it may be typed as. */
 const TEAM_CRESTS=[
   {file:"atletico", names:["אתלטיקו מדריד","אתלטיקו","אתלטיקו דה מדריד","אתלטי","atletico madrid","atletico de madrid","atletico","atleti"]},
+  {file:"villarreal", names:["ויאריאל","וויאריאל","ויאראל","ויאריל","הצוללת הצהובה","villarreal","villareal","villarreal cf"]},
 ];
 function normTeam(s){ return (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[֑-ׇ]/g,"")
   .replace(/["'`׳״.\-_()]/g," ").replace(/\b(fc|cf|cd|sd|ud|rcd|club|de futbol)\b/g," ").replace(/\s+/g," ").trim(); }
